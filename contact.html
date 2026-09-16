@@ -87,6 +87,19 @@ tailwind.config = { theme: { extend: {
     *, *::before, *::after { animation-duration:.001s !important; transition-duration:.001s !important; }
     html { scroll-behavior:auto; }
   }
+  html,
+body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+section,
+footer,
+header {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 </style>
 </head>
 <body class="antialiased">
@@ -211,11 +224,15 @@ tailwind.config = { theme: { extend: {
 <section class="pb-20 sm:pb-28">
   <div class="max-w-7xl mx-auto px-5 sm:px-8">
     <div class="reveal zoom rounded-[2rem] overflow-hidden shadow-2xl shadow-ink/15 relative">
-      <iframe title="STACKLY location map" src="https://maps.google.com/maps?q=New%20York%20Medical%20Center&t=&z=14&ie=UTF8&iwloc=&output=embed" class="w-full h-[420px] border-0 grayscale-[30%] contrast-[1.05]" loading="lazy"></iframe>
-      <div class="absolute top-5 left-5 bg-white/90 backdrop-blur-xl rounded-2xl px-5 py-4 shadow-xl border border-white/60 pointer-events-none">
-        <p class="font-display font-bold text-sm">STACKLY</p>
-        <p class="text-ink/55 text-xs mt-0.5">Chiina Thirupathi Salem Tamil Nadu</p>
-      </div>
+    
+    <iframe
+        title="Stackly Salem Location"
+        src="https://maps.google.com/maps?q=Chinna%20Thirupathi%20Salem%20Tamil%20Nadu&t=&z=15&ie=UTF8&iwloc=&output=embed"
+        class="w-full h-[420px] border-0"
+        loading="lazy">
+    </iframe>
+
+</div>
     </div>
     <div class="reveal mt-8 grid sm:grid-cols-3 gap-5 text-center stagger">
       <div class="lift-card rounded-3xl p-6"><p class="font-display font-extrabold text-brand-600 text-lg">Free parking</p><p class="text-ink/55 text-sm mt-1">Garage on-site, validated for all patients</p></div>

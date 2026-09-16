@@ -168,7 +168,16 @@ text-decoration:underline;
 width:90%;
 }
 }
+.password-box input{
+    padding-right:45px;
+}
 
+.eye{
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+}
 </style>
 </head>
 
@@ -303,10 +312,6 @@ function loginUser(event){
 
 
 
-
-localStorage.setItem("userName", name);
-localStorage.setItem("userEmail", email);
-localStorage.setItem("userRole", role);
 
 
 

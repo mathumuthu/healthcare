@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi User Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(-45deg,#5b2cff,#8e2de2,#00c6ff,#7f00ff);
+background-size:400% 400%;
+animation:bgMove 12s ease infinite;
+overflow:hidden;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.back{
+position:absolute;
+top:30px;
+left:40px;
+color:white;
+text-decoration:none;
+}
+
+.container{
+width:400px;
+padding:40px;
+border-radius:18px;
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(15px);
+text-align:center;
+}
+
+.logo{
+width:65px;
+height:65px;
+margin:auto;
+margin-bottom:15px;
+background:linear-gradient(135deg,#5b2cff,#8e2de2);
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-size:26px;
+}
+
+h2{color:white;}
+.subtitle{color:#ddd;margin-bottom:20px;}
+
+.input-group{
+text-align:left;
+margin-bottom:15px;
+}
+
+label{
+color:white;
+font-size:13px;
+display:block;
+margin-bottom:5px;
+}
+
+input,select{
+width:100%;
+padding:12px;
+border-radius:8px;
+border:none;
+}
+
+.password-box{
+position:relative;
+}
+
+.eye{
+position:absolute;
+right:12px;
+top:12px;
+cursor:pointer;
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+color:white;
+margin-top:10px;
+}
+
+.row a{
+color:white;
+text-decoration:none;
+}
+
+button{
+margin-top:20px;
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,#2f6bff,#a200ff);
+color:white;
+cursor:pointer;
+}
+
+.signup{
+margin-top:15px;
+color:white;
+}
+
+.signup a{
+color:white;
+text-decoration:underline;
+}
+.logo{
+    width:80px;
+    height:80px;
+    margin:auto;
+    margin-bottom:15px;
+    background:white;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+
+.logo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+@media(max-width:450px){
+.container{
+width:90%;
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<a href="index.html" class="back">← Back to Home</a>
+
+<div class="container">
+
+<div class="logo">
+    <img src="logo.webp" alt="Logo">
+</div>
+<h2>Welcome Back</h2>
+<p class="subtitle">Login to access your account</p>
+
+<form onsubmit="loginUser(event)">
+
+<!-- ROLE -->
+<div class="input-group">
+<label>Login As</label>
+<select id="role">
+<option value="Administrator">Administrator</option>
+<option value="Patient">Patient</option>
+</select>
+</div>
+
+<!-- EMAIL -->
+<div class="input-group">
+<label>Email ID</label>
+<input type="email" id="email" placeholder="Enter your email">
+</div>
+
+<!-- PASSWORD -->
+<div class="input-group">
+<label>Password</label>
+
+<div class="password-box">
+<input
+type="password"
+id="password"
+placeholder="Enter Password"
+required
+pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&]).{8,}"
+title="Must contain 8+ characters, uppercase, lowercase, number and special character"><span class="eye" onclick="togglePassword()">👁</span>
+</div>
+
+</div>
+
+<!-- REMEMBER -->
+<div class="row">
+<label>
+<input type="checkbox"> Remember me
+</label>
+<a href="404.html">Forgot password?</a>
+</div>
+
+<button type="submit">Login to Dashboard</button>
+
+</form>
+
+<div class="signup">
+Don't have an account?
+<a href="sig.html">Sign up</a>
+</div>
+
+</div>
+
+<script>
+
+function togglePassword(){
+let pass=document.getElementById("password");
+pass.type = pass.type === "password" ? "text" : "password";
+}
+
+function loginUser(event){
+
+event.preventDefault();
+
+let email=document.getElementById("email").value.trim();
+let password=document.getElementById("password").value.trim();
+let role=document.getElementById("role").value;
+
+let emailPattern=/^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+
+if(email==="" || password===""){
+alert("Please fill all fields");
+return;
+}
+
+if(!email.match(emailPattern)){
+alert("Enter valid email");
+return;
+}
+
+/* REDIRECT */
+if(role==="Administrator"){
+    window.location.href="admin-dashboard.html";
+}
+else{
+    window.location.href="researcher-dashboard.html";
+}
+
+}
+function loginUser(event){
+    event.preventDefault();
+
+    let email = document.getElementById("email").value.trim();
+    let password = document.getElementById("password").value.trim();
+    let role = document.getElementById("role").value;
+
+    if(email === "" || password === ""){
+        alert("Please fill all fields");
+        return;
+    }
+
+    // Example Name
+    let name = email.split("@")[0];
+
+    // Save Login Data
+    localStorage.setItem("userName", name);
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userRole", role);
+
+    if(role === "Administrator"){
+        window.location.href = "admin-dashboard.html";
+    } else {
+        window.location.href = "researcher-dashboard.html";
+    }
+}
+</script>
+
+</body>
+</html>

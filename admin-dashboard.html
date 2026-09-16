@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioTech Labs - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .nav-item.active {
+            background-color: #eff6ff;
+            color: #4f46e5;
+            border-right: 3px solid #4f46e5;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .mobile-menu-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        .logo-hover {
+            transition: transform 0.2s ease;
+        }
+        .logo-hover:hover {
+            transform: scale(1.05);
+        }
+        .logo-img {
+            object-fit: contain;
+            max-height: 100%;
+            max-width: 100%;
+        }
+        .admin-badge {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+        .chart-bar {
+            transition: height 0.5s ease;
+        }
+        .status-dot {
+            box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
+        }
+        /* Logout button hover animation */
+        .logout-btn {
+            transition: all 0.2s ease;
+        }
+        .logout-btn:hover {
+            background-color: #fee2e2;
+            color: #dc2626;
+            transform: translateY(-1px);
+        }
+        .logout-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 overflow-x-hidden">
+
+    <!-- Mobile Header -->
+    <div class="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+        <div class="flex items-center gap-3">
+          <a href="404.html">  <button id="mobile-menu-btn" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fas fa-bars text-gray-600 text-xl"></i>
+            </button></a>
+            <!-- Mobile Logo with href - REPLACE SRC WITH YOUR LOGO -->
+            <a href="admin-dashboard.html" target="_blank" class="flex items-center gap-2 logo-hover">
+                <!-- OPTION 1: Your Logo Image -->
+                 <!-- <img src="logo.webp" alt="BioTech Labs Logo" class="w-10 h-10 rounded-lg shadow-md logo-img">  -->
+                
+                <!-- OPTION 2: External URL -->
+                 <img src="logo.webp" alt="BioTech Labs Logo" class="w-10 h-10 rounded-lg shadow-md logo-img"> 
+                
+                <!-- OPTION 3: Placeholder (replace with your actual logo) -->
+                <!-- <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center text-white shadow-md">
+                    <i class="fas fa-dna text-lg"></i>
+                </div> -->
+                
+                <div>
+                    <h1 class="font-bold text-gray-900 text-sm">Stackly</h1>
+                    <div class="flex items-center gap-1">
+                        <span class="admin-badge text-white text-[10px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="404.html"><button class="relative p-2 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-bell text-gray-600"></i>
+                <span class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">5</span>
+            </button></a>
+            <!-- Mobile Logout Button -->
+         <a href="404.html">   <button onclick="handleLogout()" class="logout-btn p-2 text-gray-600 hover:text-red-600 rounded-lg transition-colors" title="Logout">
+                <i class="fas fa-sign-out-alt text-lg"></i>
+            </button></a>
+            <div id="adminInitials" class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-semibold text-sm border-2 border-purple-500">
+                AD
+            </div>
+        </div>
+    </div>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 sidebar-transition transform -translate-x-full lg:translate-x-0 flex flex-col h-screen overflow-y-auto">
+            
+            <!-- Desktop Logo with href - REPLACE SRC WITH YOUR LOGO -->
+            <div class="hidden lg:flex items-center gap-3 p-6 border-b border-gray-100">
+                <a href="Dash1.html" target="_blank" class="flex items-center gap-3 logo-hover group">
+                    <!-- OPTION 1: Your Logo Image -->
+                    <!-- <img src="/path/to/your/logo.png" alt="BioTech Labs Logo" class="w-12 h-12 rounded-xl shadow-lg shadow-purple-200 logo-img group-hover:shadow-purple-300 transition-shadow"> -->
+                    
+                    <!-- OPTION 2: External URL -->
+                    <img src="logo.webp" alt="BioTech Labs Logo" class="w-12 h-12 rounded-xl shadow-lg shadow-purple-200 logo-img group-hover:shadow-purple-300 transition-shadow"> 
+                    
+                    <!-- OPTION 3: Placeholder (replace with your actual logo) -->
+                    <!-- <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center text-white shadow-lg shadow-purple-200 group-hover:shadow-purple-300 transition-shadow">
+                        <i class="fas fa-dna text-xl"></i>
+                    </div> -->
+                    
+                    <div>
+                        <h1 class="font-bold text-gray-900 text-lg">Stackly</h1>
+                        <div class="flex items-center gap-2">
+                            <p class="text-xs text-gray-500">Admin Portal</p>
+                            <span class="admin-badge text-white text-[10px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Mobile Logo in Sidebar - REPLACE SRC WITH YOUR LOGO -->
+            <div class="lg:hidden p-4 border-b border-gray-100">
+                <a href="Dash1.html" target="_blank" class="flex items-center gap-3 logo-hover">
+                    <!-- OPTION 1: Your Logo Image -->
+                    <!-- <img src="/path/to/your/logo.png" alt="BioTech Labs Logo" class="w-10 h-10 rounded-lg shadow-md logo-img"> -->
+                    
+                    <!-- OPTION 2: External URL -->
+                    <img src="logo.webp" alt="BioTech Labs Logo" class="w-10 h-10 rounded-lg shadow-md logo-img"> 
+                    
+                    <!-- OPTION 3: Placeholder (replace with your actual logo) -->
+                    <!-- <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center text-white shadow-md">
+                        <i class="fas fa-dna text-lg"></i>
+                    </div> -->
+                    
+                    <div>
+                        <h1 class="font-bold text-gray-900">Stackly</h1>
+                        <div class="flex items-center gap-1">
+                            <span class="admin-badge text-white text-[10px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Mobile Close Button -->
+         <a href="404.html">   <div class="lg:hidden flex justify-end p-4 absolute top-0 right-0">
+                <button id="close-sidebar" class="p-2 hover:bg-gray-100 rounded-lg">
+                    <i class="fas fa-times text-gray-600 text-xl"></i>
+                </button>
+            </div>
+</a>
+
+            <!-- Admin Navigation -->
+            <nav class="flex-1 px-4 py-4 space-y-1">
+                <!-- <button onclick="navigateTo('dashboard')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group active" data-page="dashboard">
+                    <i class="fas fa-chart-line w-5 text-center group-hover:text-purple-600 transition-colors"></i>
+                    <span class="font-medium">Dashboard</span>
+                </button> -->
+                
+                <button onclick="navigateTo('users')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="users">
+                    <i class="fas fa-users-cog w-5 text-center group-hover:text-purple-600 transition-colors"></i>
+                    <span class="font-medium">User Management</span>
+                    <span class="ml-auto bg-purple-100 text-purple-700 text-xs rounded-full px-2 py-0.5">24</span>
+                </button>
+                
+                <button onclick="navigateTo('projects')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="projects">
+                    <i class="fas fa-flask w-5 text-center group-hover:text-purple-600 transition-colors"></i>
+                    <span class="font-medium">Projects</span>
+                    <span class="ml-auto bg-blue-100 text-blue-700 text-xs rounded-full px-2 py-0.5">12</span>
+                </button>
+                
+                <button onclick="navigateTo('samples')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="samples">
+                    <i class="fas fa-vial w-5 text-center group-hover:text-purple-600 transition-colors"></i>
+                    <span class="font-medium">Lab Samples</span>
+                    <span class="ml-auto bg-green-100 text-green-700 text-xs rounded-full px-2 py-0.5">127</span>
+                </button>
+                
+                <button onclick="navigateTo('analytics')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="analytics">
+                    <i class="fas fa-chart-pie w-5 text-center group-hover:text-purple-600 transition-colors"></i>
+                    <span class="font-medium">Analytics</span>
+                </button>
+                
+                <button onclick="navigateTo('reports')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="reports">
+                    <i class="fas fa-file-alt w-5 text-center group-hover:text-purple-600 transition-colors"></i>
+                    <span class="font-medium">Reports</span>
+                </button>
+                
+                <button onclick="navigateTo('system')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="system">
+                    <i class="fas fa-server w-5 text-center group-hover:text-purple-600 transition-colors"></i>
+                    <span class="font-medium">System Health</span>
+                    <span class="ml-auto w-2 h-2 bg-green-500 rounded-full status-dot"></span>
+                </button>
+
+                <button onclick="navigateTo('settings')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="settings">
+                    <i class="fas fa-cog w-5 text-center group-hover:text-purple-600 transition-colors"></i>
+                    <span class="font-medium">Settings</span>
+                </button>
+            </nav>
+
+            <!-- Sidebar Logout Button (Mobile & Desktop) -->
+            <div class="p-4 border-t border-gray-200">
+              <a href="index.html"> <button onclick="handleLogout()" class="logout-btn w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all group">
+                    <i class="fas fa-sign-out-alt w-5 text-center group-hover:text-red-600 transition-colors"></i>
+                    <span class="font-medium">Logout</span>
+                </button></a> 
+            </div>
+
+            <!-- Admin Quick Stats -->
+            <div class="p-4 border-t border-gray-200 bg-gradient-to-br from-purple-50 to-indigo-50 m-4 rounded-xl">
+                <h3 class="text-xs font-semibold text-purple-800 uppercase tracking-wider mb-3">System Status</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Server Uptime</span>
+                        <span class="text-sm font-bold text-green-600">99.9%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Active Users</span>
+                        <span class="text-sm font-bold text-purple-600">42</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Pending Tasks</span>
+                        <span class="text-sm font-bold text-amber-600">8</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Overlay for mobile -->
+        <div id="sidebar-overlay" class="fixed inset-0 z-40 mobile-menu-overlay hidden lg:hidden"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 min-w-0 overflow-y-auto">
+            <!-- Desktop Header -->
+            <header class="hidden lg:flex items-center justify-between px-8 py-4 bg-white border-b border-gray-200 sticky top-0 z-30">
+                <div class="flex-1 max-w-2xl">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Search users, projects, samples..." class="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-0 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4 ml-6">
+              <a href="404.html">      <button class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fas fa-bell text-gray-600 text-lg"></i>
+                        <span class="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-white">5</span>
+                    </button></a>
+                    
+               <a href="404.html"></a>     <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600">
+                        <i class="fas fa-envelope text-lg"></i>
+                    </button>
+
+                    <!-- Desktop Logout Button -->
+                   <!-- <a href="login.html"> <button onclick="handleLogout()" class="logout-btn flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-red-600 border border-gray-200 hover:border-red-200 rounded-lg transition-all font-medium text-sm">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button></a> -->
+
+                    <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+                        <div class="text-right hidden xl:block">
+    <p id="userName" class="text-sm font-semibold text-gray-900">
+        Welcome
+    </p>
+    <p id="userEmail" class="text-xs text-gray-500">
+        Loading...
+    </p>
+    <p id="userRole" class="text-xs text-purple-600 font-medium">Loading...</p>
+</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Mobile Search -->
+            <div class="lg:hidden px-4 py-3 bg-white border-b border-gray-200">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Search users, projects..." class="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-0 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-4 lg:p-8 max-w-7xl mx-auto">
+                
+                <!-- Dashboard Page -->
+                <div id="page-dashboard" class="page-content fade-in">
+                    <div class="mb-8">
+                        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+                        <p class="text-gray-500">Overview of system performance and key metrics</p>
+                    </div>
+
+                    <!-- Key Metrics Cards -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 card-hover">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                                    <i class="fas fa-users text-lg"></i>
+                                </div>
+                                <span class="text-xs text-green-600 font-medium flex items-center gap-1">
+                                    <i class="fas fa-arrow-up"></i> 12%
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-1">Total Users</p>
+                            <p class="text-2xl lg:text-3xl font-bold text-gray-900">1,284</p>
+                            <p class="text-xs text-gray-500 mt-1">Active this month</p>
+                        </div>
+                        
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 card-hover">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
+                                    <i class="fas fa-flask text-lg"></i>
+                                </div>
+                                <span class="text-xs text-green-600 font-medium flex items-center gap-1">
+                                    <i class="fas fa-arrow-up"></i> 8%
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-1">Active Projects</p>
+                            <p class="text-2xl lg:text-3xl font-bold text-gray-900">42</p>
+                            <p class="text-xs text-gray-500 mt-1">3 pending approval</p>
+                        </div>
+                        
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 card-hover">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600">
+                                    <i class="fas fa-vial text-lg"></i>
+                                </div>
+                                <span class="text-xs text-green-600 font-medium flex items-center gap-1">
+                                    <i class="fas fa-arrow-up"></i> 24%
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-1">Samples Processed</p>
+                            <p class="text-2xl lg:text-3xl font-bold text-gray-900">3,847</p>
+                            <p class="text-xs text-gray-500 mt-1">This quarter</p>
+                        </div>
+                        
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 card-hover">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600">
+                                    <i class="fas fa-exclamation-triangle text-lg"></i>
+                                </div>
+                                <span class="text-xs text-red-600 font-medium flex items-center gap-1">
+                                    <i class="fas fa-arrow-up"></i> 2
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-1">System Alerts</p>
+                            <p class="text-2xl lg:text-3xl font-bold text-gray-900">5</p>
+                            <p class="text-xs text-gray-500 mt-1">Require attention</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Activity Chart -->
+                        <div class="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <h2 class="text-lg font-bold text-gray-900">Platform Activity</h2>
+                                    <p class="text-sm text-gray-500">User logins and sample processing over time</p>
+                                </div>
+                                <select class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option>Last 7 Days</option>
+                                    <option>Last 30 Days</option>
+                                    <option>Last 3 Months</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Simple CSS Bar Chart -->
+                            <div class="h-64 flex items-end justify-between gap-2 px-2">
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-purple-200 rounded-t-lg chart-bar" style="height: 45%"></div>
+                                    <div class="w-full bg-blue-200 rounded-t-lg chart-bar" style="height: 30%"></div>
+                                    <span class="text-xs text-gray-500">Mon</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-purple-200 rounded-t-lg chart-bar" style="height: 60%"></div>
+                                    <div class="w-full bg-blue-200 rounded-t-lg chart-bar" style="height: 40%"></div>
+                                    <span class="text-xs text-gray-500">Tue</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-purple-200 rounded-t-lg chart-bar" style="height: 75%"></div>
+                                    <div class="w-full bg-blue-200 rounded-t-lg chart-bar" style="height: 55%"></div>
+                                    <span class="text-xs text-gray-500">Wed</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-purple-200 rounded-t-lg chart-bar" style="height: 50%"></div>
+                                    <div class="w-full bg-blue-200 rounded-t-lg chart-bar" style="height: 35%"></div>
+                                    <span class="text-xs text-gray-500">Thu</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-purple-200 rounded-t-lg chart-bar" style="height: 85%"></div>
+                                    <div class="w-full bg-blue-200 rounded-t-lg chart-bar" style="height: 65%"></div>
+                                    <span class="text-xs text-gray-500">Fri</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-purple-200 rounded-t-lg chart-bar" style="height: 40%"></div>
+                                    <div class="w-full bg-blue-200 rounded-t-lg chart-bar" style="height: 25%"></div>
+                                    <span class="text-xs text-gray-500">Sat</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-purple-200 rounded-t-lg chart-bar" style="height: 35%"></div>
+                                    <div class="w-full bg-blue-200 rounded-t-lg chart-bar" style="height: 20%"></div>
+                                    <span class="text-xs text-gray-500">Sun</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-center gap-6 mt-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 bg-purple-200 rounded"></div>
+                                    <span class="text-sm text-gray-600">User Logins</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 bg-blue-200 rounded"></div>
+                                    <span class="text-sm text-gray-600">Samples</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity & Quick Actions -->
+                        <div class="space-y-6">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4">Quick Actions</h2>
+                                <div class="grid grid-cols-2 gap-3">
+                              <a href="404.html">      <button class="p-4 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors text-center group">
+                                        <div class="w-10 h-10 bg-purple-200 rounded-lg flex items-center justify-center text-purple-700 mx-auto mb-2 group-hover:scale-110 transition-transform">
+                                            <i class="fas fa-user-plus"></i>
+                                        </div>
+                                        <p class="text-sm font-medium text-gray-900">Add User</p>
+                                    </button></a>
+                                    <a href="404.html">      <button class="p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors text-center group">
+                                        <div class="w-10 h-10 bg-blue-200 rounded-lg flex items-center justify-center text-blue-700 mx-auto mb-2 group-hover:scale-110 transition-transform">
+                                            <i class="fas fa-project-diagram"></i>
+                                        </div>
+                                        <p class="text-sm font-medium text-gray-900">New Project</p>
+                                    </button></a>
+                                    <a href="404.html">      <button class="p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-colors text-center group">
+                                        <div class="w-10 h-10 bg-green-200 rounded-lg flex items-center justify-center text-green-700 mx-auto mb-2 group-hover:scale-110 transition-transform">
+                                            <i class="fas fa-file-export"></i>
+                                        </div>
+                                        <p class="text-sm font-medium text-gray-900">Export Data</p>
+                                    </button></a>
+                                    <a href="404.html">      <button class="p-4 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors text-center group">
+                                        <div class="w-10 h-10 bg-amber-200 rounded-lg flex items-center justify-center text-amber-700 mx-auto mb-2 group-hover:scale-110 transition-transform">
+                                            <i class="fas fa-bell"></i>
+                                        </div>
+                                        <p class="text-sm font-medium text-gray-900">Alerts Action</p>
+                                    </button></a>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4">Recent Activity</h2>
+                                <div class="space-y-3">
+                                    <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 flex-shrink-0">
+                                            <i class="fas fa-user text-xs"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900">New user registered</p>
+                                            <p class="text-xs text-gray-500">Dr. Emily Chen • 5 min ago</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 flex-shrink-0">
+                                            <i class="fas fa-vial text-xs"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900">Sample analyzed</p>
+                                            <p class="text-xs text-gray-500">SMP-0044 • 12 min ago</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 flex-shrink-0">
+                                            <i class="fas fa-flask text-xs"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900">Project updated</p>
+                                            <p class="text-xs text-gray-500">Cancer Genomics Study • 1 hr ago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            <a href="404.html">    <button class="w-full mt-4 py-2 text-purple-600 text-sm font-medium hover:bg-purple-50 rounded-lg transition-colors">View All Activity</button></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Approvals & System Status -->
+                    <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-lg font-bold text-gray-900">Pending Approvals</h2>
+                                <span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">3 pending</span>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-semibold">
+                                            RJ
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900">Dr. Robert Johnson</p>
+                                            <p class="text-sm text-gray-500">Researcher • Cardiology Dept</p>
+                                        </div>
+                                    </div>
+                                 <a href="404.html">   <div class="flex gap-2">
+                                        <button class="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700">Approve</button>
+                                        <button class="px-3 py-1.5 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50">Reject</button>
+                                    </div></a>
+                                </div>
+                                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-semibold">
+                                            ML
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900">Maria Lopez</p>
+                                            <p class="text-sm text-gray-500">Lab Technician • Pathology</p>
+                                        </div>
+                                    </div>
+                               <a href="404.html">     <div class="flex gap-2">
+                                        <button class="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700">Approve</button>
+                                        <button class="px-3 py-1.5 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50">Reject</button>
+                                    </div></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-lg font-bold text-gray-900">System Health</h2>
+                                <span class="flex items-center gap-1.5 text-sm text-green-600">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                    Operational
+                                </span>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-600">Server Load</span>
+                                        <span class="font-semibold text-gray-900">42%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 42%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-600">Database</span>
+                                        <span class="font-semibold text-gray-900">68%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-yellow-500 h-2 rounded-full" style="width: 68%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-600">Storage</span>
+                                        <span class="font-semibold text-gray-900">85%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-red-500 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-600">API Response</span>
+                                        <span class="font-semibold text-green-600">24ms</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 15%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management Page -->
+                <div id="page-users" class="page-content hidden fade-in">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                        <div>
+                            <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">User Management</h1>
+                            <p class="text-gray-500">Manage researchers, technicians, and patient accounts</p>
+                        </div>
+                        <div class="flex gap-2">
+                      <a href="404.html">      <button class="px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button></a>
+                            <a href="404.html">      <button class="px-4 py-2.5 gradient-bg text-white font-medium rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-200 flex items-center gap-2">
+                                <i class="fas fa-plus"></i>
+                                Add User
+                            </button></a>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 mb-6">
+                        <div class="flex flex-col lg:flex-row gap-4">
+                            <div class="flex-1 relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" placeholder="Search by name, email, or ID..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div class="flex gap-2">
+                                <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option>All Roles</option>
+                                    <option>Researcher</option>
+                                    <option>Technician</option>
+                                    <option>Patient</option>
+                                    <option>Admin</option>
+                                </select>
+                                <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option>All Status</option>
+                                    <option>Active</option>
+                                    <option>Pending</option>
+                                    <option>Suspended</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Users Table -->
+                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Department</th>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Last Active</th>
+                                        <th class="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-semibold">
+                                                    EC
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-gray-900">Dr. Emily Chen</p>
+                                                    <p class="text-sm text-gray-500">emily.chen@biotech.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">Researcher</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Cardiology</td>
+                                        <td class="px-6 py-4">
+                                            <span class="flex items-center gap-1.5 text-sm text-green-600">
+                                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                                Active
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">2 minutes ago</td>
+                                        <td class="px-6 py-4 text-right">
+                                         <a href="404.html">   <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-v"></i></button></a>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold">
+                                                    JR
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-gray-900">Dr. John Researcher</p>
+                                                    <p class="text-sm text-gray-500">john.r@biotech.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">Lead Researcher</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Oncology</td>
+                                        <td class="px-6 py-4">
+                                            <span class="flex items-center gap-1.5 text-sm text-green-600">
+                                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                                Active
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">1 hour ago</td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-v"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 font-semibold">
+                                                    RJ
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-gray-900">Dr. Robert Johnson</p>
+                                                    <p class="text-sm text-gray-500">robert.j@biotech.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">Researcher</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Cardiology</td>
+                                        <td class="px-6 py-4">
+                                            <span class="flex items-center gap-1.5 text-sm text-amber-600">
+                                                <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+                                                Pending
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">Never</td>
+                                        <td class="px-6 py-4 text-right">
+                                        <a href="404.html">    <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-v"></i></button></a>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-semibold">
+                                                    ML
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-gray-900">Maria Lopez</p>
+                                                    <p class="text-sm text-gray-500">maria.l@biotech.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Technician</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Pathology</td>
+                                        <td class="px-6 py-4">
+                                            <span class="flex items-center gap-1.5 text-sm text-amber-600">
+                                                <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+                                                Pending
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">Never</td>
+                                        <td class="px-6 py-4 text-right">
+                                         <a href="404.html">   <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-v"></i></button></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                            <p class="text-sm text-gray-500">Showing 1-4 of 1,284 users</p>
+                          <a href="404.html">  <div class="flex gap-2">
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 disabled:opacity-50" disabled>Previous</button>
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">Next</button>
+                            </div></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Page -->
+                <div id="page-projects" class="page-content hidden fade-in">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                        <div>
+                            <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Research Projects</h1>
+                            <p class="text-gray-500">Monitor and manage all research initiatives</p>
+                        </div>
+                        <a href="404.html">
+                            <button class="px-4 py-2.5 gradient-bg text-white font-medium rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-200 flex items-center gap-2">
+                                <i class="fas fa-plus"></i>
+                                New Project
+                            </button>
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
+                                    <i class="fas fa-dna text-xl"></i>
+                                </div>
+                                <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Active</span>
+                            </div>
+                            <h3 class="font-bold text-xl text-gray-900 mb-2">Cancer Genomics Study</h3>
+                            <p class="text-sm text-gray-500 mb-4">Comprehensive analysis of genetic mutations in breast cancer patients</p>
+                            
+                            <div class="space-y-3 mb-4">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Lead Researcher</span>
+                                    <span class="font-medium text-gray-900">Dr. Emily Chen</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Team Size</span>
+                                    <span class="font-medium text-gray-900">4 members</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Samples</span>
+                                    <span class="font-medium text-gray-900">127 processed</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-600">Progress</span>
+                                    <span class="font-semibold text-gray-900">67%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="gradient-bg h-2 rounded-full" style="width: 67%"></div>
+                                </div>
+                            </div>
+
+                          <a href="404.html">  <div class="flex gap-2">
+                                <button class="flex-1 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800">View Details</button>
+                                <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"><i class="fas fa-edit"></i></button>
+                            </div></a>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
+                                    <i class="fas fa-brain text-xl"></i>
+                                </div>
+                                <span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">Pending Review</span>
+                            </div>
+                            <h3 class="font-bold text-xl text-gray-900 mb-2">Alzheimer's Biomarker Discovery</h3>
+                            <p class="text-sm text-gray-500 mb-4">Identifying novel protein biomarkers for early detection</p>
+                            
+                            <div class="space-y-3 mb-4">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Lead Researcher</span>
+                                    <span class="font-medium text-gray-900">Dr. Sarah Miller</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Team Size</span>
+                                    <span class="font-medium text-gray-900">6 members</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Samples</span>
+                                    <span class="font-medium text-gray-900">89 processed</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-600">Progress</span>
+                                    <span class="font-semibold text-gray-900">45%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 45%"></div>
+                                </div>
+                            </div>
+
+                          <a href="404.html">  <div class="flex gap-2">
+                                <button class="flex-1 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800">Review</button>
+                                <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"><i class="fas fa-edit"></i></button>
+                            </div></a>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-600">
+                                    <i class="fas fa-check-circle text-xl"></i>
+                                </div>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">Completed</span>
+                            </div>
+                            <h3 class="font-bold text-xl text-gray-900 mb-2">COVID-19 Variant Tracking</h3>
+                            <p class="text-sm text-gray-500 mb-4">Genomic surveillance of emerging viral strains</p>
+                            
+                            <div class="space-y-3 mb-4">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Lead Researcher</span>
+                                    <span class="font-medium text-gray-900">Dr. James Wilson</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Team Size</span>
+                                    <span class="font-medium text-gray-900">8 members</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Samples</span>
+                                    <span class="font-medium text-gray-900">2,341 processed</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-600">Progress</span>
+                                    <span class="font-semibold text-gray-900">100%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
+                                </div>
+                            </div>
+
+                       <a href="404.html">     <div class="flex gap-2">
+                                <button class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50">View Report</button>
+                                <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"><i class="fas fa-archive"></i></button>
+                            </div></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Samples Page -->
+                <div id="page-samples" class="page-content hidden fade-in">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                        <div>
+                            <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Lab Samples</h1>
+                            <p class="text-gray-500">Track and manage all laboratory samples</p>
+                        </div>
+                      <a href="404.html">  <div class="flex gap-2">
+                            <button class="px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+                                <i class="fas fa-filter"></i>
+                                Filter
+                            </button></a>
+                     <a href="404.html">       <button class="px-4 py-2.5 gradient-bg text-white font-medium rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-200 flex items-center gap-2">
+                                <i class="fas fa-plus"></i>
+                                Add Sample
+                            </button></a>
+                        </div>
+                    </div>
+
+                    <!-- Sample Stats -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded-xl border border-gray-200">
+                            <p class="text-sm text-gray-600 mb-1">Total Samples</p>
+                            <p class="text-2xl font-bold text-gray-900">3,847</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200">
+                            <p class="text-sm text-gray-600 mb-1">Processing</p>
+                            <p class="text-2xl font-bold text-blue-600">142</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200">
+                            <p class="text-sm text-gray-600 mb-1">Analyzed</p>
+                            <p class="text-2xl font-bold text-green-600">3,521</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200">
+                            <p class="text-sm text-gray-600 mb-1">Flagged</p>
+                            <p class="text-2xl font-bold text-red-600">12</p>
+                        </div>
+                    </div>
+
+                    <!-- Samples Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-white border border-gray-200 rounded-xl p-5 card-hover">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                                    <i class="fas fa-vial"></i>
+                                </div>
+                                <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Analyzed</span>
+                            </div>
+                            <h3 class="font-bold text-gray-900 mb-1">Blood Sample - Patient A</h3>
+                            <p class="text-sm text-gray-500 mb-3">SMP-001 • DNA Analysis</p>
+                            <div class="space-y-1 text-sm text-gray-600">
+                                <p><i class="fas fa-thermometer-half mr-2 text-gray-400"></i>-80°C • Freezer A-12</p>
+                                <p><i class="fas fa-user mr-2 text-gray-400"></i>Dr. Emily Chen</p>
+                                <p><i class="fas fa-calendar mr-2 text-gray-400"></i>March 20, 2024</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl p-5 card-hover">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center text-yellow-600">
+                                    <i class="fas fa-vial"></i>
+                                </div>
+                                <span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">Processing</span>
+                            </div>
+                            <h3 class="font-bold text-gray-900 mb-1">Tissue Biopsy - Case 42</h3>
+                            <p class="text-sm text-gray-500 mb-3">SMP-002 • Histopathology</p>
+                            <div class="space-y-1 text-sm text-gray-600">
+                                <p><i class="fas fa-thermometer-half mr-2 text-gray-400"></i>4°C • Lab Station 3</p>
+                                <p><i class="fas fa-user mr-2 text-gray-400"></i>Dr. John Researcher</p>
+                                <p><i class="fas fa-calendar mr-2 text-gray-400"></i>March 22, 2024</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl p-5 card-hover">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
+                                    <i class="fas fa-vial"></i>
+                                </div>
+                                <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">Stored</span>
+                            </div>
+                            <h3 class="font-bold text-gray-900 mb-1">RNA Extract - Experiment 7</h3>
+                            <p class="text-sm text-gray-500 mb-3">SMP-003 • RNA Sequencing</p>
+                            <div class="space-y-1 text-sm text-gray-600">
+                                <p><i class="fas fa-thermometer-half mr-2 text-gray-400"></i>-80°C • Freezer B-05</p>
+                                <p><i class="fas fa-user mr-2 text-gray-400"></i>Dr. Sarah Miller</p>
+                                <p><i class="fas fa-calendar mr-2 text-gray-400"></i>March 18, 2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Page -->
+                <div id="page-analytics" class="page-content hidden fade-in">
+                    <div class="mb-6">
+                        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Analytics & Insights</h1>
+                        <p class="text-gray-500">Detailed performance metrics and trends</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <h2 class="text-lg font-bold text-gray-900 mb-4">User Activity Trends</h2>
+                            <div class="h-64 flex items-end justify-between gap-2">
+                                <div class="flex-1 bg-purple-200 rounded-t-lg" style="height: 30%"></div>
+                                <div class="flex-1 bg-purple-200 rounded-t-lg" style="height: 45%"></div>
+                                <div class="flex-1 bg-purple-200 rounded-t-lg" style="height: 60%"></div>
+                                <div class="flex-1 bg-purple-200 rounded-t-lg" style="height: 50%"></div>
+                                <div class="flex-1 bg-purple-200 rounded-t-lg" style="height: 75%"></div>
+                                <div class="flex-1 bg-purple-200 rounded-t-lg" style="height: 85%"></div>
+                                <div class="flex-1 bg-purple-200 rounded-t-lg" style="height: 90%"></div>
+                            </div>
+                            <div class="flex justify-between mt-2 text-xs text-gray-500">
+                                <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <h2 class="text-lg font-bold text-gray-900 mb-4">Sample Processing Volume</h2>
+                            <div class="h-64 flex items-end justify-between gap-2">
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 40%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 55%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 45%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 70%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 80%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 95%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 85%"></div>
+                            </div>
+                            <div class="flex justify-between mt-2 text-xs text-gray-500">
+                                <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-white rounded-xl border border-gray-200 p-6">
+                        <h2 class="text-lg font-bold text-gray-900 mb-4">Key Performance Indicators</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-gray-900 mb-1">98.5%</div>
+                                <div class="text-sm text-gray-500">Sample Success Rate</div>
+                                <div class="text-xs text-green-600 mt-1">↑ 2.3% from last month</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-gray-900 mb-1">24h</div>
+                                <div class="text-sm text-gray-500">Avg. Processing Time</div>
+                                <div class="text-xs text-green-600 mt-1">↓ 4h improvement</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-gray-900 mb-1">4.9/5</div>
+                                <div class="text-sm text-gray-500">User Satisfaction</div>
+                                <div class="text-xs text-gray-500 mt-1">Based on 234 reviews</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-gray-900 mb-1">$2.4M</div>
+                                <div class="text-sm text-gray-500">Research Funding</div>
+                                <div class="text-xs text-green-600 mt-1">↑ 15% YTD</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Page -->
+                <div id="page-reports" class="page-content hidden fade-in">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                        <div>
+                            <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Reports</h1>
+                            <p class="text-gray-500">Generate and download system reports</p>
+                        </div>
+                <a href="404.html">        <button class="px-4 py-2.5 gradient-bg text-white font-medium rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-200 flex items-center gap-2">
+                            <i class="fas fa-plus"></i>
+                            Create Report
+                        </button></a>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-4">
+                                <i class="fas fa-users text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">User Activity Report</h3>
+                            <p class="text-sm text-gray-500 mb-4">Comprehensive log of user logins, actions, and system access</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">Last generated: 2 days ago</span>
+                             <a href="404.html">   <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Download</button></a>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-600 mb-4">
+                                <i class="fas fa-flask text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Laboratory Summary</h3>
+                            <p class="text-sm text-gray-500 mb-4">Sample processing statistics and quality metrics</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">Last generated: 5 hours ago</span>
+                          <a href="404.html">      <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Download</button></a>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4">
+                                <i class="fas fa-shield-alt text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Security Audit</h3>
+                            <p class="text-sm text-gray-500 mb-4">Security events, access violations, and compliance status</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">Last generated: 1 week ago</span>
+                             <a href="404.html">   <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Download</button></a>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 mb-4">
+                                <i class="fas fa-dollar-sign text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Financial Overview</h3>
+                            <p class="text-sm text-gray-500 mb-4">Budget allocation, expenses, and funding utilization</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">Last generated: 3 days ago</span>
+                               <a href="404.html"> <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Download</button></a>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center text-red-600 mb-4">
+                                <i class="fas fa-exclamation-triangle text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Incident Report</h3>
+                            <p class="text-sm text-gray-500 mb-4">System errors, anomalies, and resolution tracking</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">Last generated: 1 day ago</span>
+                             <a href="404.html">   <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Download</button></a>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-dashed border-2 border-gray-300 flex flex-col items-center justify-center text-center p-8">
+                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-4">
+                                <i class="fas fa-plus text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Custom Report</h3>
+                            <p class="text-sm text-gray-500 mb-4">Create a tailored report with specific parameters</p>
+                       <a href="404.html">     <button class="px-6 py-2 border-2 border-purple-600 text-purple-600 font-medium rounded-lg hover:bg-purple-50 transition-colors">Configure</button></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Health Page -->
+                <div id="page-system" class="page-content hidden fade-in">
+                    <div class="mb-6">
+                        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">System Health</h1>
+                        <p class="text-gray-500">Monitor infrastructure and service status</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-white p-6 rounded-xl border border-gray-200">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                                <h3 class="font-bold text-gray-900">All Systems Operational</h3>
+                            </div>
+                            <p class="text-sm text-gray-500 mb-4">Last updated: Just now</p>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">API Gateway</span>
+                                    <span class="text-green-600 font-medium">Operational</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">Database</span>
+                                    <span class="text-green-600 font-medium">Operational</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">Storage</span>
+                                    <span class="text-green-600 font-medium">Operational</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">Authentication</span>
+                                    <span class="text-green-600 font-medium">Operational</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-200">
+                            <h3 class="font-bold text-gray-900 mb-4">Server Performance</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-gray-600">CPU Usage</span>
+                                        <span class="font-semibold text-gray-900">34%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 34%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-gray-600">Memory</span>
+                                        <span class="font-semibold text-gray-900">58%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-yellow-500 h-2 rounded-full" style="width: 58%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-gray-600">Disk I/O</span>
+                                        <span class="font-semibold text-gray-900">23%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 23%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-200">
+                            <h3 class="font-bold text-gray-900 mb-4">Recent Incidents</h3>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-green-50 rounded-lg border border-green-200">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <i class="fas fa-check-circle text-green-600 text-sm"></i>
+                                        <span class="font-medium text-sm text-gray-900">Resolved</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">Database backup completed</p>
+                                    <p class="text-xs text-gray-400 mt-1">2 hours ago</p>
+                                </div>
+                                <div class="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <i class="fas fa-exclamation-triangle text-yellow-600 text-sm"></i>
+                                        <span class="font-medium text-sm text-gray-900">Warning</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">High memory usage detected</p>
+                                    <p class="text-xs text-gray-400 mt-1">5 hours ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <h2 class="text-lg font-bold text-gray-900 mb-4">System Logs</h2>
+                        <div class="bg-gray-900 rounded-lg p-4 font-mono text-sm text-gray-300 overflow-x-auto">
+                            <div class="space-y-1">
+                                <p><span class="text-green-400">[2024-03-23 10:15:32]</span> <span class="text-blue-400">INFO</span> Database connection established</p>
+                                <p><span class="text-green-400">[2024-03-23 10:15:30]</span> <span class="text-blue-400">INFO</span> API Gateway started on port 8080</p>
+                                <p><span class="text-green-400">[2024-03-23 10:15:28]</span> <span class="text-yellow-400">WARN</span> Cache miss for user session: u_8842</p>
+                                <p><span class="text-green-400">[2024-03-23 10:15:25]</span> <span class="text-blue-400">INFO</span> Background job completed: sample_cleanup</p>
+                                <p><span class="text-green-400">[2024-03-23 10:15:20]</span> <span class="text-red-400">ERROR</span> Failed to connect to external API (timeout)</p>
+                                <p><span class="text-green-400">[2024-03-23 10:15:15]</span> <span class="text-blue-400">INFO</span> User login: dr.chen@biotech.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="page-settings" class="page-content hidden fade-in">
+                    <div class="mb-6">
+                        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Admin Settings</h1>
+                        <p class="text-gray-500">Configure system preferences and security policies</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                    <i class="fas fa-shield-alt text-purple-600"></i>
+                                    Security Settings
+                                </h2>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                                        <div>
+                                            <p class="font-medium text-gray-900">Two-Factor Authentication</p>
+                                            <p class="text-sm text-gray-500">Required for all admin accounts</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                                        <div>
+                                            <p class="font-medium text-gray-900">Password Policy</p>
+                                            <p class="text-sm text-gray-500">Enforce strong passwords (12+ chars)</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between py-3">
+                                        <div>
+                                            <p class="font-medium text-gray-900">Session Timeout</p>
+                                            <p class="text-sm text-gray-500">Auto-logout after 30 minutes inactive</p>
+                                        </div>
+                                        <select class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                            <option>15 minutes</option>
+                                            <option selected>30 minutes</option>
+                                            <option>1 hour</option>
+                                            <option>2 hours</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                    <i class="fas fa-bell text-purple-600"></i>
+                                    Notification Settings
+                                </h2>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                                        <div>
+                                            <p class="font-medium text-gray-900">System Alerts</p>
+                                            <p class="text-sm text-gray-500">Email notifications for critical errors</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                                        <div>
+                                            <p class="font-medium text-gray-900">New User Registrations</p>
+                                            <p class="text-sm text-gray-500">Alert when new accounts are created</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between py-3">
+                                        <div>
+                                            <p class="font-medium text-gray-900">Weekly Summary</p>
+                                            <p class="text-sm text-gray-500">Receive weekly system reports</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4">System Information</h2>
+                                <div class="space-y-3 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Version</span>
+                                        <span class="font-medium text-gray-900">v2.4.1</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Last Updated</span>
+                                        <span class="font-medium text-gray-900">March 15, 2024</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Database</span>
+                                        <span class="font-medium text-gray-900">PostgreSQL 14.2</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Node.js</span>
+                                        <span class="font-medium text-gray-900">v18.17.0</span>
+                                    </div>
+                                </div>
+                           <a href="404.html">     <button class="w-full mt-4 py-2 border border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors text-sm font-medium">
+                                    Check for Updates
+                                </button></a>
+                            </div>
+
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4">Maintenance</h2>
+                                <div class="space-y-3">
+                               <a href="404.html">     <button class="w-full p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left flex items-center gap-3">
+                                        <i class="fas fa-broom text-gray-400"></i>
+                                        <div>
+                                            <p class="font-medium text-gray-900 text-sm">Clear Cache</p>
+                                            <p class="text-xs text-gray-500">Free up 2.4 GB</p>
+                                        </div>
+                                    </button></a>
+                               <a href="404.html">    <button class="w-full p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left flex items-center gap-3">
+                                        <i class="fas fa-database text-gray-400"></i>
+                                        <div>
+                                            <p class="font-medium text-gray-900 text-sm">Backup Database</p>
+                                            <p class="text-xs text-gray-500">Last: 2 hours ago</p>
+                                        </div>
+                                    </button></a> 
+                               <a href="404.html">     <button class="w-full p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left flex items-center gap-3">
+                                        <i class="fas fa-file-export text-gray-400"></i>
+                                        <div>
+                                            <p class="font-medium text-gray-900 text-sm">Export Logs</p>
+                                            <p class="text-xs text-gray-500">Download system logs</p>
+                                        </div>
+                                    </button></a>
+                                </div>
+                            </div>
+
+                            <div class="bg-red-50 rounded-xl border border-red-200 p-6">
+                                <h2 class="text-lg font-bold text-red-900 mb-2">Danger Zone</h2>
+                                <p class="text-sm text-red-700 mb-4">Destructive actions for system management</p>
+                            <a href="404.html">    <button class="w-full py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium mb-2">
+                                    Restart Services
+                                </button></a>
+                                <button class="w-full py-2 border border-red-600 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium">
+                                    Factory Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <footer class="bg-gray-900 text-gray-300 px-6 py-5 text-sm">
+        <div class="max-w-7xl mx-auto grid gap-4 sm:grid-cols-3 items-center">
+            <div class="flex items-center gap-2"><img src="logo.webp" alt="Stackly logo" class="w-8 h-8 rounded-lg object-cover"><div><strong class="text-white">Stackly Care Network</strong><p class="text-xs text-gray-400">Care that stays connected, wherever you are.</p></div></div>
+            <div class="text-center text-xs"><p>Chinna Thirupathi, Salem, Tamil Nadu</p><a href="tel:9876543211" class="text-brand-300 hover:text-white">24/7 support · 9876543211</a></div>
+            <div class="flex justify-center sm:justify-end items-center gap-3" aria-label="Social links"><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="Facebook">f</a><a href="#" aria-label="Instagram">ig</a></div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuBtn.addEventListener('click', openSidebar);
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        // Navigation functionality
+        function navigateTo(page) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Show selected page
+            const selectedPage = document.getElementById(`page-${page}`);
+            if (selectedPage) {
+                selectedPage.classList.remove('hidden');
+            }
+            
+            // Update nav active states
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === page) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Close mobile sidebar
+            closeSidebar();
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Logout handler
+        function handleLogout() {
+            // Show confirmation dialog
+            if (confirm('Are you sure you want to logout?')) {
+                // Add your logout logic here
+                console.log('Logging out...');
+                
+                // Example: Clear session storage
+                sessionStorage.clear();
+                localStorage.removeItem('authToken');
+                
+                // Redirect to login page (update the URL as needed)
+                // window.location.href = '/login.html';
+                
+                // For demo purposes, show alert
+                alert('You have been logged out successfully.');
+                
+                // Optional: Reload page to reset state
+                // window.location.reload();
+            }
+        }
+
+        // Initialize dashboard as active
+        document.addEventListener('DOMContentLoaded', () => {
+            navigateTo('dashboard');
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                closeSidebar();
+            }
+        });
+document.addEventListener("DOMContentLoaded", () => {
+
+    let name = localStorage.getItem("userName");
+    let email = localStorage.getItem("userEmail");
+    let role = localStorage.getItem("userRole");
+
+    document.getElementById("userName").innerText =
+        "Welcome, " + name;
+
+    document.getElementById("userEmail").innerText =
+        email;
+
+    document.getElementById("userRole").innerText =
+        role;
+});
+
+
+    </script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script src="button-links.js"></script>
+</body>
+</html>

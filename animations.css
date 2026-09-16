@@ -1,0 +1,149 @@
+/* ============================================================
+   Starkly Healthcare — Animations
+   Scroll reveals (IntersectionObserver), floats, counters,
+   parallax helpers, text reveal, glow. Elegant, not excessive.
+   ============================================================ */
+
+/* ---------- Scroll reveal states ---------- */
+[data-reveal] {
+  opacity: 0;
+  transition:
+    opacity 0.8s var(--ease-out),
+    transform 0.8s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0s);
+  will-change: opacity, transform;
+}
+[data-reveal="fade-up"]    { transform: translateY(2.5rem); }
+[data-reveal="fade-in"]    { transform: none; }
+[data-reveal="slide-left"] { transform: translateX(-3rem); }
+[data-reveal="slide-right"]{ transform: translateX(3rem); }
+[data-reveal="scale"]      { transform: scale(0.9); }
+
+[data-reveal].revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Stagger children of a [data-stagger] container */
+[data-stagger] > * {
+  opacity: 0;
+  transform: translateY(2rem);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 0.12s);
+}
+[data-stagger].revealed > * { opacity: 1; transform: none; }
+
+/* ---------- Keyframes ---------- */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+
+@keyframes float-drift {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33%      { transform: translate(10px, -16px) rotate(3deg); }
+  66%      { transform: translate(-8px, -6px) rotate(-2deg); }
+}
+
+@keyframes pulse-dot {
+  0%   { box-shadow: 0 0 0 0 rgba(43, 192, 190, 0.55); }
+  70%  { box-shadow: 0 0 0 12px rgba(43, 192, 190, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(43, 192, 190, 0); }
+}
+
+@keyframes ripple {
+  to { transform: scale(4); opacity: 0; }
+}
+
+@keyframes ecg {
+  0%   { stroke-dashoffset: 600; }
+  60%  { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -600; }
+}
+
+@keyframes blob-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(3rem, 2rem) scale(1.12); }
+  100% { transform: translate(-2rem, 3rem) scale(0.95); }
+}
+
+@keyframes gradient-pan {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Floating hero elements ---------- */
+.float-el { animation: float-drift 9s ease-in-out infinite; }
+.float-el.f2 { animation-duration: 11s; animation-delay: -3s; }
+.float-el.f3 { animation-duration: 13s; animation-delay: -6s; }
+
+/* ---------- Gradient glow ring on hover ---------- */
+.glow-ring { position: relative; }
+.glow-ring::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--teal-400), var(--blue-500), var(--teal-400));
+  background-size: 220% 220%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+  animation: gradient-pan 4s linear infinite;
+}
+.glow-ring:hover::after { opacity: 1; }
+
+/* ---------- Text reveal (words slide up in masks) ---------- */
+.text-reveal .w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.text-reveal .w > span {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 0.7s var(--ease-out);
+  transition-delay: calc(var(--wi, 0) * 0.06s);
+}
+.text-reveal.revealed .w > span { transform: translateY(0); }
+
+/* ---------- Page transition veil ---------- */
+.page-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: linear-gradient(135deg, var(--blue-900), var(--teal-700));
+  transform: scaleY(0);
+  transform-origin: top;
+  pointer-events: none;
+  transition: transform 0.45s var(--ease-soft);
+}
+.page-veil.active { transform: scaleY(1); }
+
+/* ---------- Counter pop when done ---------- */
+@keyframes count-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+.counted { animation: count-pop 0.5s var(--ease-out); }
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+  }
+  [data-reveal], [data-stagger] > * { opacity: 1 !important; transform: none !important; }
+}

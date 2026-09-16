@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medora Health — Premium Healthcare, Reimagined</title>
+<meta name="description" content="World-class healthcare with compassionate care, cutting-edge technology, and premium patient experience.">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: { 50:'#eef7ff',100:'#d9edff',200:'#bce0ff',300:'#8ecdff',400:'#59b0ff',500:'#3390ff',600:'#1d6ff5',700:'#1558e1',800:'#1747b6',900:'#183f8f',950:'#132a5c' }, ink:'#0b1b33' },
+  fontFamily: { display:['"Sora"','sans-serif'], body:['"Inter"','sans-serif'] }
+} } }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+  :root { --ease-out: cubic-bezier(0.22, 1, 0.36, 1); }
+  * { -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background:#f7fafc; color:#0b1b33; overflow-x:hidden; }
+  h1,h2,h3,.font-display { font-family:'Sora',sans-serif; }
+  #preloader { position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#0b1b33 0%,#132a5c 100%); transition:opacity .7s var(--ease-out), visibility .7s; }
+  #preloader.done { opacity:0; visibility:hidden; }
+  .loader-pulse { width:74px; height:74px; border-radius:50%; position:relative; display:flex; align-items:center; justify-content:center; }
+  .loader-pulse::before, .loader-pulse::after { content:''; position:absolute; inset:0; border-radius:50%; border:2px solid #59b0ff; animation:ring 2s ease-out infinite; }
+  .loader-pulse::after { animation-delay:1s; }
+  .loader-heart { color:#59b0ff; animation:beat 1.1s ease-in-out infinite; }
+  @keyframes ring { 0%{transform:scale(.5);opacity:1} 100%{transform:scale(1.6);opacity:0} }
+  @keyframes beat { 0%,100%{transform:scale(1)} 30%{transform:scale(1.22)} 45%{transform:scale(1.05)} 60%{transform:scale(1.18)} }
+  .reveal { opacity:0; transform:translateY(46px); transition:opacity .9s var(--ease-out), transform .9s var(--ease-out); will-change:opacity,transform; }
+  .reveal.slide-left { transform:translateX(-56px); }
+  .reveal.slide-right { transform:translateX(56px); }
+  .reveal.zoom { transform:scale(.86); }
+  .reveal.in { opacity:1; transform:none; }
+  .stagger > * { opacity:0; transform:translateY(36px); transition:opacity .8s var(--ease-out), transform .8s var(--ease-out); }
+  .stagger.in > * { opacity:1; transform:none; }
+  .stagger.in > *:nth-child(1){transition-delay:.05s}.stagger.in > *:nth-child(2){transition-delay:.15s}
+  .stagger.in > *:nth-child(3){transition-delay:.25s}.stagger.in > *:nth-child(4){transition-delay:.35s}
+  .stagger.in > *:nth-child(5){transition-delay:.45s}.stagger.in > *:nth-child(6){transition-delay:.55s}
+  .stagger.in > *:nth-child(7){transition-delay:.65s}.stagger.in > *:nth-child(8){transition-delay:.75s}
+  #nav { transition:background .4s, box-shadow .4s, backdrop-filter .4s; }
+  #nav.scrolled, #nav.solid { background:rgba(255,255,255,.85); backdrop-filter:blur(18px) saturate(160%); box-shadow:0 8px 30px rgba(11,27,51,.08); }
+  .nav-link { position:relative; transition:color .3s; }
+  .nav-link::after { content:''; position:absolute; left:0; bottom:-4px; width:100%; height:2px; background:linear-gradient(90deg,#3390ff,#59e0c5); border-radius:2px; transform:scaleX(0); transform-origin:right; transition:transform .35s var(--ease-out); }
+  .nav-link:hover::after, .nav-link.active::after { transform:scaleX(1); transform-origin:left; }
+  .nav-link.active { color:#1d6ff5; }
+  .float-slow { animation:floaty 7s ease-in-out infinite; }
+  .float-mid { animation:floaty 5.5s ease-in-out infinite 1.2s; }
+  @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
+  .btn-primary { position:relative; overflow:hidden; background:linear-gradient(135deg,#1d6ff5,#3390ff); transition:transform .3s var(--ease-out), box-shadow .3s; box-shadow:0 10px 30px rgba(29,111,245,.35); }
+  .btn-primary:hover { transform:translateY(-3px); box-shadow:0 18px 44px rgba(29,111,245,.45); }
+  .btn-primary:active { transform:translateY(-1px) scale(.97); }
+  .btn-primary::after { content:''; position:absolute; top:0; left:-80%; width:50%; height:100%; background:linear-gradient(105deg,transparent,rgba(255,255,255,.45),transparent); transform:skewX(-25deg); transition:left .6s var(--ease-out); }
+  .btn-primary:hover::after { left:130%; }
+  .btn-ghost { transition:transform .3s var(--ease-out), background .3s, color .3s, border-color .3s; }
+  .btn-ghost:hover { transform:translateY(-3px); }
+  .btn-ghost:active { transform:scale(.97); }
+  .lift-card { transition:transform .45s var(--ease-out), box-shadow .45s var(--ease-out), border-color .45s; border:1px solid rgba(11,27,51,.07); background:#fff; }
+  .lift-card:hover { transform:translateY(-10px); box-shadow:0 30px 60px -18px rgba(11,27,51,.18); border-color:rgba(51,144,255,.35); }
+  .icon-chip { transition:transform .45s var(--ease-out), background .45s, color .45s; }
+  .lift-card:hover .icon-chip { transform:scale(1.12) rotate(-6deg); background:linear-gradient(135deg,#1d6ff5,#3390ff); color:#fff; }
+  .orb { position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; }
+  .img-zoom { overflow:hidden; }
+  .img-zoom img { transition:transform 1.1s var(--ease-out); }
+  .img-zoom:hover img { transform:scale(1.07); }
+  #mobileMenu { clip-path:circle(0% at calc(100% - 44px) 44px); transition:clip-path .65s var(--ease-out); visibility:hidden; }
+  #mobileMenu.open { clip-path:circle(150% at calc(100% - 44px) 44px); visibility:visible; }
+  #burger span { transition:transform .35s var(--ease-out), opacity .3s; }
+  #burger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  #burger.open span:nth-child(2){ opacity:0; }
+  #burger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  #pageCurtain { position:fixed; inset:0; z-index:90; background:linear-gradient(135deg,#0b1b33,#132a5c); transform:translateY(100%); pointer-events:none; }
+  .stat-num { font-variant-numeric:tabular-nums; }
+  .form-input { width:100%; border:1.5px solid rgba(11,27,51,.1); background:#fff; border-radius:1rem; padding:.9rem 1.15rem; transition:border-color .3s, box-shadow .3s; font-size:.95rem; }
+  .form-input:focus { outline:none; border-color:#3390ff; box-shadow:0 0 0 4px rgba(51,144,255,.14); }
+  .filter-chip { transition:all .3s var(--ease-out); }
+  .filter-chip.active, .filter-chip:hover { background:linear-gradient(135deg,#1d6ff5,#3390ff); color:#fff; border-color:transparent; box-shadow:0 8px 22px rgba(29,111,245,.3); }
+  .avail-dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .prose-article p { margin-bottom:1.25rem; line-height:1.85; color:rgba(11,27,51,.72); }
+  .prose-article h2 { font-size:1.6rem; font-weight:700; margin:2.2rem 0 1rem; }
+  .prose-article ul { margin:0 0 1.25rem 1.25rem; list-style:disc; color:rgba(11,27,51,.72); line-height:1.8; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:.001s !important; transition-duration:.001s !important; }
+    html { scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body class="antialiased">
+
+<div id="preloader">
+  <div class="text-center">
+    <div class="loader-pulse mx-auto"><span class="loader-heart">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.8-3.4 5.5 5.5 0 0 0-9.8 3.4c0 6 9.8 11.4 9.8 11.4s9.8-5.4 9.8-11.4z"/></svg>
+    </span></div>
+    <p class="mt-6 text-white/70 text-sm tracking-[0.3em] uppercase font-display">Stackly</p>
+  </div>
+</div>
+<div id="pageCurtain"></div>
+
+<header id="nav" class="fixed top-0 left-0 right-0 z-50">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-8 py-4">
+    <a href="index.html" class="flex items-center gap-2.5 group">
+      <img src="logo.webp" alt="Stackly logo" class="w-10 h-10 rounded-xl object-cover shadow-lg shadow-brand-500/30 group-hover:rotate-[-8deg] transition-transform duration-300">
+      <span class="font-display font-bold text-lg tracking-tight">Stackly</span>
+    </a>
+    <div class="hidden lg:flex items-center gap-8 text-sm font-medium text-ink/70"><a href="index.html" class="nav-link active hover:text-ink transition-colors">Home</a><a href="about.html" class="nav-link  hover:text-ink transition-colors">About Us</a><a href="doctors.html" class="nav-link  hover:text-ink transition-colors">Doctors</a><a href="blog.html" class="nav-link  hover:text-ink transition-colors">Blog</a><a href="contact.html" class="nav-link  hover:text-ink transition-colors">Contact Us</a></div>
+    <div class="flex items-center gap-3">
+      <a href="login.html" class="hidden sm:inline-flex btn-ghost text-sm font-semibold px-4 py-2.5 rounded-full text-ink/70 hover:text-brand-600">Log in</a>
+      <a href="404.html" class="btn-primary hidden sm:inline-flex text-white text-sm font-semibold px-5 py-2.5 rounded-full">Book Appointment</a>
+      <button id="burger" aria-label="Menu" class="lg:hidden relative z-[60] w-11 h-11 flex flex-col items-center justify-center gap-[5px] rounded-xl bg-white/80 backdrop-blur shadow">
+        <span class="w-5 h-[2px] bg-ink rounded"></span><span class="w-5 h-[2px] bg-ink rounded"></span><span class="w-5 h-[2px] bg-ink rounded"></span>
+      </button>
+    </div>
+  </nav>
+</header>
+<div id="mobileMenu" class="fixed inset-0 z-40 bg-gradient-to-br from-ink to-brand-950 flex flex-col items-center justify-center gap-7 text-white text-2xl font-display font-semibold">
+  <a href="index.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 text-brand-300">Home</a><a href="about.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 ">About Us</a><a href="doct.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 ">Doctors</a><a href="blog.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 ">Blog</a><a href="contact.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 ">Contact Us</a>
+  <a href="login.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 text-lg">Log in</a>
+  <a href="404.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 btn-primary px-8 py-3 rounded-full text-lg">Book Appointment</a>
+</div>
+
+<section id="hero" class="relative min-h-screen flex items-center pt-28 pb-16 overflow-hidden">
+  <div class="orb w-[480px] h-[480px] bg-brand-300/40 -top-32 -left-32" data-parallax="0.12"></div>
+  <div class="orb w-[420px] h-[420px] bg-teal-300/30 top-1/3 -right-40" data-parallax="0.2"></div>
+  <div class="orb w-[300px] h-[300px] bg-brand-200/50 bottom-0 left-1/3" data-parallax="0.08"></div>
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-14 items-center relative z-10">
+    <div>
+      <span class="reveal inline-flex items-center gap-2 bg-white/70 backdrop-blur border border-brand-100 text-brand-700 text-xs font-semibold px-4 py-2 rounded-full shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Now accepting new patients
+      </span>
+      <h1 class="reveal mt-6 text-4xl sm:text-5xl lg:text-[3.6rem] font-extrabold leading-[1.08] tracking-tight">
+        Healthcare that feels<br><span class="bg-gradient-to-r from-brand-600 via-brand-500 to-teal-500 bg-clip-text text-transparent">human again.</span>
+      </h1>
+      <p class="reveal mt-6 text-lg text-ink/60 max-w-lg leading-relaxed">Medora Health combines world-class physicians, AI-assisted diagnostics, and a premium patient experience — so every visit feels effortless.</p>
+      <div class="reveal mt-9 flex flex-wrap gap-4">
+        <a href="contact.html" class="btn-primary text-white font-semibold px-8 py-4 rounded-full">Book a Consultation</a>
+        <a href="index.html#services" class="btn-ghost border-2 border-ink/10 hover:border-brand-500 hover:text-brand-600 font-semibold px-8 py-4 rounded-full bg-white/60 backdrop-blur">Explore Services</a>
+      </div>
+      <div class="reveal mt-12 flex items-center gap-5">
+        <div class="flex -space-x-3">
+          <span class="w-11 h-11 rounded-full ring-4 ring-white bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-xs font-bold">EM</span>
+          <span class="w-11 h-11 rounded-full ring-4 ring-white bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center text-white text-xs font-bold">JR</span>
+          <span class="w-11 h-11 rounded-full ring-4 ring-white bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center text-white text-xs font-bold">SK</span>
+          <span class="w-11 h-11 rounded-full ring-4 ring-white bg-ink text-white text-[10px] font-bold flex items-center justify-center">50k+</span>
+        </div>
+        <div class="text-sm">
+          <div class="flex text-amber-400 text-sm">★★★★★ <span class="text-ink/50 ml-2 font-semibold">4.9</span></div>
+          <p class="text-ink/50">Trusted by 50,000+ patients</p>
+        </div>
+      </div>
+    </div>
+    <div class="relative reveal zoom">
+      <div class="relative rounded-[2.2rem] overflow-hidden shadow-2xl shadow-brand-900/20 img-zoom">
+        <img src="heroimg.webp" alt="Doctor consulting patient" class="w-full h-[420px] sm:h-[500px] object-cover" loading="eager">
+        <div class="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent"></div>
+      </div>
+      <div class="float-slow absolute -top-6 -left-4 sm:-left-8 bg-white/85 backdrop-blur-xl rounded-2xl px-5 py-4 shadow-xl shadow-ink/10 border border-white/60">
+        <p class="text-xs text-ink/50 font-medium">Avg. wait time</p><p class="font-display font-bold text-xl text-ink">4 min</p>
+      </div>
+      <div class="float-mid absolute -bottom-6 -right-3 sm:-right-6 bg-white/85 backdrop-blur-xl rounded-2xl px-5 py-4 shadow-xl shadow-ink/10 border border-white/60 flex items-center gap-3">
+        <span class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+        <div><p class="font-display font-bold text-sm">24/7 Care</p><p class="text-xs text-ink/50">Always on call</p></div>
+      </div>
+      <div class="float-mid absolute top-1/2 -right-4 sm:-right-10 bg-gradient-to-br from-brand-600 to-brand-800 text-white rounded-2xl px-5 py-4 shadow-xl shadow-brand-700/40">
+        <p class="font-display font-bold text-2xl">98%</p><p class="text-xs text-white/70">Satisfaction</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="bg-ink py-4 overflow-hidden">
+  <div class="ticker-track text-white/60 text-sm font-medium tracking-wide" style="display:flex;gap:3.5rem;width:max-content;animation:ticker 28s linear infinite">
+    <span>✦ Cardiology</span><span>✦ Pediatrics</span><span>✦ Neurology</span><span>✦ Dermatology</span><span>✦ Orthopedics</span><span>✦ Mental Health</span><span>✦ Telemedicine</span>
+    <span>✦ Cardiology</span><span>✦ Pediatrics</span><span>✦ Neurology</span><span>✦ Dermatology</span><span>✦ Orthopedics</span><span>✦ Mental Health</span><span>✦ Telemedicine</span>
+  </div>
+</div>
+<style>@keyframes ticker{to{transform:translateX(-50%)}}</style>
+
+<section id="stats" class="py-20 sm:py-24">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 stagger">
+      <div class="lift-card rounded-3xl p-8 text-center"><p class="stat-num font-display font-extrabold text-4xl sm:text-5xl text-brand-600" data-target="50" data-suffix="k+">0</p><p class="mt-2 text-ink/50 font-medium">Happy Patients</p></div>
+      <div class="lift-card rounded-3xl p-8 text-center"><p class="stat-num font-display font-extrabold text-4xl sm:text-5xl text-brand-600" data-target="120" data-suffix="+">0</p><p class="mt-2 text-ink/50 font-medium">Expert Doctors</p></div>
+      <div class="lift-card rounded-3xl p-8 text-center"><p class="stat-num font-display font-extrabold text-4xl sm:text-5xl text-brand-600" data-target="15" data-suffix=" yrs">0</p><p class="mt-2 text-ink/50 font-medium">Of Excellence</p></div>
+      <div class="lift-card rounded-3xl p-8 text-center"><p class="stat-num font-display font-extrabold text-4xl sm:text-5xl text-brand-600" data-target="98" data-suffix="%">0</p><p class="mt-2 text-ink/50 font-medium">Satisfaction Rate</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="services" class="py-20 sm:py-28 bg-white relative overflow-hidden">
+  <div class="orb w-[380px] h-[380px] bg-brand-100/70 -right-32 top-10" data-parallax="0.15"></div>
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
+    <div class="max-w-2xl reveal">
+      <p class="text-brand-600 font-semibold text-sm tracking-[0.25em] uppercase">Our Services</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">Complete care, under one roof</h2>
+      <p class="mt-4 text-ink/60 text-lg">From preventive checkups to specialized treatment — every service is designed around you.</p>
+    </div>
+    <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger">
+      <a href="about.html" class="lift-card rounded-3xl p-8 block"><span class="icon-chip w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.8-3.4 5.5 5.5 0 0 0-9.8 3.4c0 6 9.8 11.4 9.8 11.4s9.8-5.4 9.8-11.4z"/></svg></span><h3 class="mt-6 font-display font-bold text-xl">Cardiology</h3><p class="mt-3 text-ink/55 leading-relaxed text-[15px]">Advanced heart screening, imaging, and interventional care with state-of-the-art equipment.</p></a>
+      <a href="about.html" class="lift-card rounded-3xl p-8 block"><span class="icon-chip w-14 h-14 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span><h3 class="mt-6 font-display font-bold text-xl">Telemedicine</h3><p class="mt-3 text-ink/55 leading-relaxed text-[15px]">Video consultations with top specialists from anywhere — prescriptions delivered digitally.</p></a>
+      <a href="about.html" class="lift-card rounded-3xl p-8 block"><span class="icon-chip w-14 h-14 rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a4 4 0 0 1 4 4c0 2-1 3-1 5h-6c0-2-1-3-1-5a4 4 0 0 1 4-4z"/><path d="M9 16h6M10 20h4"/></svg></span><h3 class="mt-6 font-display font-bold text-xl">Pediatrics</h3><p class="mt-3 text-ink/55 leading-relaxed text-[15px]">Gentle, child-first care from newborn checkups to adolescent health, in a warm environment.</p></a>
+      <a href="about.html" class="lift-card rounded-3xl p-8 block"><span class="icon-chip w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4"/><circle cx="12" cy="12" r="3.5"/></svg></span><h3 class="mt-6 font-display font-bold text-xl">Diagnostics & Imaging</h3><p class="mt-3 text-ink/55 leading-relaxed text-[15px]">AI-assisted MRI, CT, and lab results with same-day reports and specialist review.</p></a>
+      <a href="about.html" class="lift-card rounded-3xl p-8 block"><span class="icon-chip w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.6-9-8.5C1.5 9 3.5 6 6.5 6c1.8 0 3 .9 3.8 2.1L12 9l1.7-.9C14.5 6.9 15.7 6 17.5 6c3 0 5 3 3.5 6.5C19 16.4 12 21 12 21z"/></svg></span><h3 class="mt-6 font-display font-bold text-xl">Mental Health</h3><p class="mt-3 text-ink/55 leading-relaxed text-[15px]">Confidential therapy, psychiatry, and wellness programs tailored to your life.</p></a>
+      <a href="about.html" class="lift-card rounded-3xl p-8 block"><span class="icon-chip w-14 h-14 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L20 10l-6.1 1.4L12 17l-1.9-5.6L4 10l6.1-1.4z"/></svg></span><h3 class="mt-6 font-display font-bold text-xl">Preventive Care</h3><p class="mt-3 text-ink/55 leading-relaxed text-[15px]">Annual health plans, screenings, and nutrition coaching to keep you ahead of illness.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 sm:py-28 relative overflow-hidden">
+  <div class="orb w-[400px] h-[400px] bg-teal-200/40 -left-40 bottom-0" data-parallax="0.1"></div>
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-14 items-center relative z-10">
+    <div class="reveal slide-left relative">
+      <div class="rounded-[2.2rem] overflow-hidden shadow-2xl shadow-ink/15 img-zoom">
+        <img src="home1img.webp" alt="Modern medical technology" class="w-full h-[420px] object-cover" loading="lazy">
+      </div>
+      <div class="float-slow absolute -bottom-8 left-6 sm:left-10 bg-gradient-to-br from-brand-600 to-brand-800 text-white rounded-3xl p-6 shadow-2xl shadow-brand-700/40 max-w-[220px]">
+        <p class="font-display font-extrabold text-4xl">15+</p><p class="text-white/70 text-sm mt-1">Years setting the standard in patient care</p>
+      </div>
+    </div>
+    <div class="reveal slide-right">
+      <p class="text-brand-600 font-semibold text-sm tracking-[0.25em] uppercase">Why Medora</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">Technology with a human touch</h2>
+      <p class="mt-5 text-ink/60 text-lg leading-relaxed">We believe great healthcare is equal parts science and empathy. Our physicians use AI-powered tools to see more — and spend more time listening to you.</p>
+      <ul class="mt-8 space-y-4 stagger">
+        <li class="flex items-start gap-3"><span class="mt-1 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span class="text-ink/75"><strong class="text-ink">AI-assisted diagnostics</strong> — faster, more accurate results.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span class="text-ink/75"><strong class="text-ink">Same-day appointments</strong> — because your health can't wait.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span class="text-ink/75"><strong class="text-ink">Transparent pricing</strong> — no surprises, ever.</span></li>
+      </ul>
+      <a href="about.html" class="btn-primary inline-block mt-9 text-white font-semibold px-8 py-4 rounded-full">Our Story</a>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 sm:py-28 bg-white">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+    <div class="flex flex-wrap items-end justify-between gap-6 reveal">
+      <div class="max-w-xl">
+        <p class="text-brand-600 font-semibold text-sm tracking-[0.25em] uppercase">Our Specialists</p>
+        <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">Meet the people behind the care</h2>
+      </div>
+      <a href="404.html" class="btn-ghost border-2 border-ink/10 hover:border-brand-500 hover:text-brand-600 font-semibold px-6 py-3 rounded-full">View all doctors</a>
+    </div>
+    <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger">
+      <a href="404.html" class="lift-card rounded-3xl overflow-hidden block"><div class="img-zoom"><img src="hum1.webp" alt="Dr. Sarah Chen" class="w-full h-72 object-cover" loading="lazy"></div><div class="p-6"><h3 class="font-display font-bold text-lg">Dr. Sarah Chen</h3><p class="text-brand-600 text-sm font-medium">Cardiologist</p></div></a>
+      <a href="404.html" class="lift-card rounded-3xl overflow-hidden block"><div class="img-zoom"><img src="hum2.webp" alt="Dr. James Okafor" class="w-full h-72 object-cover" loading="lazy"></div><div class="p-6"><h3 class="font-display font-bold text-lg">Dr. James Okafor</h3><p class="text-brand-600 text-sm font-medium">Neurologist</p></div></a>
+      <a href="404.html" class="lift-card rounded-3xl overflow-hidden block"><div class="img-zoom"><img src="hum5.webp" alt="Dr. Amelia Torres" class="w-full h-72 object-cover" loading="lazy"></div><div class="p-6"><h3 class="font-display font-bold text-lg">Dr. Amelia Torres</h3><p class="text-brand-600 text-sm font-medium">Pediatrician</p></div></a>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 sm:py-28 relative overflow-hidden">
+  <div class="orb w-[360px] h-[360px] bg-brand-200/50 -right-32 bottom-0" data-parallax="0.12"></div>
+  <div class="max-w-5xl mx-auto px-5 sm:px-8 relative z-10">
+    <div class="text-center reveal"><p class="text-brand-600 font-semibold text-sm tracking-[0.25em] uppercase">Patient Stories</p><h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">Loved by patients worldwide</h2></div>
+    <div class="mt-14 relative reveal zoom">
+      <div class="overflow-hidden rounded-[2rem]">
+        <div id="slider" class="flex transition-transform duration-700" style="transition-timing-function:cubic-bezier(0.22,1,0.36,1)">
+          <div class="min-w-full bg-white rounded-[2rem] p-8 sm:p-12 shadow-xl shadow-ink/8 border border-ink/5"><div class="text-amber-400 text-lg">★★★★★</div><p class="mt-5 text-xl sm:text-2xl font-display font-medium leading-relaxed text-ink/85">"From booking to recovery, everything felt effortless. The doctors actually listened — I've never experienced healthcare like this."</p><div class="mt-8 flex items-center gap-4"><span class="w-12 h-12 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold">MR</span><div><p class="font-semibold">Maya Rodriguez</p><p class="text-ink/50 text-sm">Cardiology patient</p></div></div></div>
+          <div class="min-w-full bg-white rounded-[2rem] p-8 sm:p-12 shadow-xl shadow-ink/8 border border-ink/5"><div class="text-amber-400 text-lg">★★★★★</div><p class="mt-5 text-xl sm:text-2xl font-display font-medium leading-relaxed text-ink/85">"The telemedicine service saved me hours. Same-day appointment, digital prescription, and a follow-up call the next morning."</p><div class="mt-8 flex items-center gap-4"><span class="w-12 h-12 rounded-full bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center text-white font-bold">DK</span><div><p class="font-semibold">Daniel Kim</p><p class="text-ink/50 text-sm">Telemedicine patient</p></div></div></div>
+          <div class="min-w-full bg-white rounded-[2rem] p-8 sm:p-12 shadow-xl shadow-ink/8 border border-ink/5"><div class="text-amber-400 text-lg">★★★★★</div><p class="mt-5 text-xl sm:text-2xl font-display font-medium leading-relaxed text-ink/85">"As a parent, trust matters most. The pediatric team made my daughter feel safe and completely at ease."</p><div class="mt-8 flex items-center gap-4"><span class="w-12 h-12 rounded-full bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center text-white font-bold">AN</span><div><p class="font-semibold">Aisha Ndiaye</p><p class="text-ink/50 text-sm">Pediatrics parent</p></div></div></div>
+        </div>
+      </div>
+      <div class="mt-8 flex items-center justify-center gap-3">
+        <button class="dot h-2.5 rounded-full transition-all duration-300 w-7 bg-brand-600" data-i="0" aria-label="Slide 1"></button>
+        <button class="dot h-2.5 rounded-full transition-all duration-300 w-2.5 bg-ink/15" data-i="1" aria-label="Slide 2"></button>
+        <button class="dot h-2.5 rounded-full transition-all duration-300 w-2.5 bg-ink/15" data-i="2" aria-label="Slide 3"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 sm:py-28">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="reveal zoom relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-brand-800 via-brand-700 to-brand-950 px-8 py-16 sm:px-16 text-center text-white shadow-2xl shadow-brand-900/40">
+      <div class="orb w-[300px] h-[300px] bg-white/10 -top-20 -left-20"></div>
+      <div class="orb w-[260px] h-[260px] bg-teal-400/20 -bottom-24 -right-16"></div>
+      <div class="relative z-10">
+        <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight">Your health can't wait.<br class="hidden sm:block"> Neither should you.</h2>
+        <p class="mt-5 text-white/70 text-lg max-w-xl mx-auto">Book an appointment in under 60 seconds. No phone queues, no paperwork — just care.</p>
+        <div class="mt-9 flex flex-wrap justify-center gap-4">
+          <a href="contact.html" class="btn-primary inline-block text-white font-semibold px-8 py-4 rounded-full">Book an Appointment</a>
+          <a href="doctors.html" class="btn-ghost border-2 border-white/30 hover:bg-white/10 font-semibold px-8 py-4 rounded-full">Meet Our Doctors</a>
+        </div>
+        <p class="mt-6 text-white/50 text-sm">Or call us 24/7 at <span class="font-semibold text-white">+1 (800) 555-CARE</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="bg-ink text-white/60 pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 mb-10"><div class="rounded-3xl border border-white/10 bg-white/5 px-6 py-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"><div><p class="text-brand-300 text-xs font-bold uppercase tracking-[0.2em]">Stackly Care Network</p><p class="mt-1 text-white font-display font-semibold text-lg">Care that stays connected, wherever you are.</p></div><div class="flex flex-wrap gap-3 text-sm"><span class="rounded-full bg-emerald-400/15 px-4 py-2 text-emerald-200">24/7 support</span><a href="tel:9876543211" class="rounded-full bg-brand-500 px-4 py-2 text-white hover:bg-brand-400">Call 9876543211</a></div></div></div>
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+    <div>
+      <div class="flex items-center gap-2.5">
+        <img src="logo.webp" alt="Stackly logo" class="w-10 h-10 rounded-xl object-cover">
+        <span class="font-display font-bold text-lg text-white">Stackly</span>
+      </div>
+      <p class="mt-4 text-sm leading-relaxed">Premium healthcare with a human heart. Serving communities since 2011.</p>
+      <div class="mt-5 flex gap-3">
+        <a href="404.html" aria-label="Twitter" class="w-9 h-9 rounded-lg bg-white/8 flex items-center justify-center hover:bg-brand-600 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.2l7.3-8.3L2.8 2h6.4l4.4 5.9L18.9 2zm-1.1 18h1.7L7.1 3.9H5.3L17.8 20z"/></svg></a>
+        <a href="404.html" aria-label="LinkedIn" class="w-9 h-9 rounded-lg bg-white/8 flex items-center justify-center hover:bg-brand-600 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.2 8h4.6v14H.2V8zm7.6 0h4.4v1.9h.1c.6-1.2 2.1-2.4 4.4-2.4 4.7 0 5.6 3.1 5.6 7.1V22h-4.6v-6.5c0-1.6 0-3.6-2.2-3.6s-2.6 1.7-2.6 3.5V22H7.8V8z"/></svg></a>
+        <a href="404.html" aria-label="Instagram" class="w-9 h-9 rounded-lg bg-white/8 flex items-center justify-center hover:bg-brand-600 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+        <a href="404.html" aria-label="Facebook" class="w-9 h-9 rounded-lg bg-white/8 flex items-center justify-center hover:bg-brand-600 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M14 8h3V4h-3c-2.8 0-5 2.2-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.6.4-1 1-1z"/></svg></a>
+      </div>
+    </div>
+    <div><h4 class="text-white font-semibold mb-4">Services</h4><ul class="space-y-2.5 text-sm"><li><a href="index.html#services" class="hover:text-brand-300 transition-colors">Cardiology</a></li><li><a href="index.html#services" class="hover:text-brand-300 transition-colors">Telemedicine</a></li><li><a href="index.html#services" class="hover:text-brand-300 transition-colors">Pediatrics</a></li><li><a href="index.html#services" class="hover:text-brand-300 transition-colors">Diagnostics</a></li></ul></div>
+    <div><h4 class="text-white font-semibold mb-4">Company</h4><ul class="space-y-2.5 text-sm"><li><a href="about.html" class="hover:text-brand-300 transition-colors">About us</a></li><li><a href="doctors.html" class="hover:text-brand-300 transition-colors">Doctors</a></li><li><a href="blog.html" class="hover:text-brand-300 transition-colors">Blog</a></li><li><a href="contact.html" class="hover:text-brand-300 transition-colors">Contact</a></li></ul></div>
+    <div><h4 class="text-white font-semibold mb-4">Contact</h4><ul class="space-y-2.5 text-sm"><li>9876543211</li><li>Chinna Thirupathi</li><li>Salem, Tamil Nadu</li></ul></div>
+  </div>
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-3 text-xs">
+    <p>© 2026 Stackly. All rights reserved.</p>
+    <p>Privacy · Terms · Accessibility</p>
+  </div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('done');
+    document.querySelectorAll('.hero-reveal, #hero .reveal').forEach((el,i)=>setTimeout(()=>el.classList.add('in'), 150+i*130));
+  }, 900);
+});
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40), {passive:true});
+const burger = document.getElementById('burger'), menu = document.getElementById('mobileMenu');
+const menuItems = menu.querySelectorAll('.menu-item');
+burger.addEventListener('click', () => {
+  const open = menu.classList.toggle('open');
+  burger.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+  menuItems.forEach((it,i)=> setTimeout(()=>{ it.style.opacity = open?1:0; it.style.transform = open?'none':'translateY(24px)'; }, open? 220+i*70 : 0));
+});
+menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { menu.classList.remove('open'); burger.classList.remove('open'); document.body.style.overflow=''; }));
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, {threshold: 0.12});
+document.querySelectorAll('.reveal:not(#hero .reveal):not(.hero-reveal), .stagger').forEach(el => io.observe(el));
+const counterIO = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target, target = +el.dataset.target, suffix = el.dataset.suffix || '';
+    const obj = {v: 0};
+    gsap.to(obj, {v: target, duration: 2, ease: 'power2.out', onUpdate: () => el.textContent = Math.round(obj.v) + suffix});
+    counterIO.unobserve(el);
+  });
+}, {threshold: 0.5});
+document.querySelectorAll('.stat-num').forEach(el => counterIO.observe(el));
+document.querySelectorAll('[data-parallax]').forEach(el => {
+  gsap.to(el, { yPercent: -60 * parseFloat(el.dataset.parallax) * 10, ease: 'none',
+    scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: 1.2 } });
+});
+document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+  const id = a.getAttribute('href');
+  if (id.length < 2) return;
+  const target = document.querySelector(id);
+  if (!target) return;
+  e.preventDefault();
+  const curtain = document.getElementById('pageCurtain');
+  gsap.timeline()
+    .to(curtain, {y: 0, duration: .45, ease: 'power3.inOut'})
+    .add(() => target.scrollIntoView({behavior: 'instant'}))
+    .to(curtain, {y: '-100%', duration: .55, ease: 'power3.inOut', delay: .1})
+    .set(curtain, {y: '100%'});
+}));
+</script>
+<script src="button-links.js"></script>
+</body>
+</html>
+
+<script>
+const slider = document.getElementById('slider'), dots = document.querySelectorAll('.dot');
+let idx = 0, auto;
+function go(i){ idx = (i + 3) % 3; slider.style.transform = `translateX(-${idx*100}%)`;
+  dots.forEach((d,j)=>{ d.className = `dot h-2.5 rounded-full transition-all duration-300 ${j===idx?'w-7 bg-brand-600':'w-2.5 bg-ink/15'}`; }); }
+function autoSlide(){ auto = setInterval(()=>go(idx+1), 5200); }
+dots.forEach(d => d.addEventListener('click', ()=>{ clearInterval(auto); go(+d.dataset.i); autoSlide(); }));
+autoSlide();
+</script>
+
+</body>
+</html>

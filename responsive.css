@@ -1,0 +1,121 @@
+/* ============================================================
+   Starkly Healthcare — Responsive
+   Breakpoints: 1024, 900, 768, 600, 480, 375, 320
+   Mobile-first adjustments layered over the base stylesheet.
+   ============================================================ */
+
+/* ---------- Large tablet / small desktop ---------- */
+@media (max-width: 1024px) {
+  :root { --section-y: clamp(3.5rem, 8vw, 6rem); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .split { grid-template-columns: 1fr; gap: 3rem; }
+  .split--reverse > .split-media { order: 0; }
+  .split-media { max-width: 38rem; }
+  .blog-featured { grid-template-columns: 1fr; }
+  .blog-featured .blog-cover { min-height: 15rem; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem 2.5rem; }
+}
+
+/* ---------- Tablet — navigation collapses ---------- */
+@media (max-width: 900px) {
+  .nav-toggle { display: grid; }
+
+  .main-nav {
+    position: fixed;
+    inset: var(--header-h) 0 auto 0;
+    z-index: 999;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(calc(-100% - var(--header-h) - 1rem));
+    visibility: hidden;
+    transition: transform 0.45s var(--ease-out), visibility 0s linear 0.45s;
+    max-height: calc(100svh - var(--header-h));
+    overflow: auto;
+  }
+  .main-nav.open {
+    transform: translateY(0);
+    visibility: visible;
+    transition: transform 0.45s var(--ease-out), visibility 0s;
+  }
+  .main-nav ul {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    padding: 1.25rem;
+  }
+  .main-nav a {
+    padding: 0.9rem 1.25rem;
+    border-radius: var(--r-md);
+    font-size: 1.05rem;
+  }
+  .main-nav .mobile-only { display: block; }
+
+  .header-actions .btn--login { display: none; }
+
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .hero-stats { gap: 1.75rem; }
+  .float-el { display: none; }
+}
+
+/* ---------- Small tablet ---------- */
+@media (max-width: 768px) {
+  :root { --header-h: 4.25rem; }
+  .form-grid { grid-template-columns: 1fr; }
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .search-box { margin-left: 0; max-width: none; }
+  .filter-bar .chip-scroll {
+    display: flex;
+    gap: 0.6rem;
+    overflow-x: auto;
+    padding-bottom: 0.4rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .chip-btn { flex: none; }
+  .emergency-band .band-inner { flex-direction: column; align-items: flex-start; }
+  .timeline { padding-left: 2.1rem; }
+  .modal { padding: 1.8rem 1.4rem; }
+}
+
+/* ---------- Phones ---------- */
+@media (max-width: 600px) {
+  :root { --fs-body: 1rem; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .hero { min-height: auto; }
+  .hero-content { padding-block: 5.5rem 4.5rem; }
+  .hero-ctas .btn { flex: 1 1 auto; justify-content: center; }
+  .hero-stats { flex-direction: column; gap: 1.4rem; }
+  .split-media .media-badge { right: 0.75rem; bottom: 1rem; padding: 0.8rem 1.1rem; }
+  .section-head { margin-bottom: 2.25rem; }
+  .footer-grid { grid-template-columns: 1fr; gap: 2.25rem; }
+  .footer-bottom { justify-content: center; text-align: center; }
+  .cta-band .hero-ctas { flex-direction: column; align-items: stretch; }
+  .cta-band .btn { width: 100%; }
+  .login-card { padding: 2.2rem 1.5rem; }
+  .band-actions { width: 100%; flex-direction: column; align-items: stretch; }
+  .band-actions .btn, .band-actions .emergency-phone { justify-content: center; width: 100%; }
+}
+
+/* ---------- Small phones (375 / 320) ---------- */
+@media (max-width: 375px) {
+  .container { width: calc(100% - 2rem); }
+  .btn { padding: 0.9rem 1.5rem; font-size: 0.93rem; }
+  .card, .dept-card { padding: 1.5rem; }
+  .logo { font-size: 1.1rem; }
+  .logo-mark { width: 2.2rem; height: 2.2rem; border-radius: 0.65rem; }
+  .page-hero h1 { font-size: 2rem; }
+}
+
+@media (max-width: 320px) {
+  .container { width: calc(100% - 1.5rem); }
+  .hero-badge { font-size: 0.72rem; letter-spacing: 0.05em; }
+  .stats-band { padding: 2rem 1.25rem; }
+}
+
+/* ---------- Wide screens ---------- */
+@media (min-width: 1440px) {
+  :root { --container: 80rem; }
+  .hero { min-height: min(94svh, 62rem); }
+}

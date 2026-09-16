@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .error-code {
+            font-size: 100px;
+            font-weight: 700;
+            color: #2563eb;
+            line-height: 1;
+        }
+
+        .title {
+            margin-top: 15px;
+            font-size: 28px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .description {
+            margin-top: 12px;
+            color: #666;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .button-group {
+            margin-top: 30px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-home {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .btn-home:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-back {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .btn-back:hover {
+            background: #d1d5db;
+        }
+
+        .site-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 12px 20px;
+            background: #0b1b33;
+            color: rgba(255,255,255,.75);
+            font-size: 13px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .site-footer a { color: #8ecdff; text-decoration: none; font-weight: 600; }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .error-code {
+                font-size: 72px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="error-code">404</div>
+
+        <h1 class="title">Page Not Found</h1>
+
+        <p class="description">
+            Sorry, the page you are looking for doesn't exist,
+            has been moved, or is temporarily unavailable.
+        </p>
+
+        <div class="button-group">
+            <button class="btn btn-back" onclick="history.back()">
+                ← Go Back
+            </button>
+
+            <a href="index.html" class="btn btn-home">
+                🏠 Back Home
+            </a>
+        </div>
+    </div>
+
+    <footer class="site-footer"><strong>Stackly Care Network</strong><span>Care that stays connected, wherever you are.</span><span>Chinna Thirupathi, Salem, Tamil Nadu</span><a href="tel:9876543211">Call 9876543211</a></footer>
+
+</body>
+</html>

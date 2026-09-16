@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — Medora Health</title>
+<meta name="description" content="Reach Medora Health 24/7. Contact form, phone, email, address, business hours, emergency line, and map.">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: { 50:'#eef7ff',100:'#d9edff',200:'#bce0ff',300:'#8ecdff',400:'#59b0ff',500:'#3390ff',600:'#1d6ff5',700:'#1558e1',800:'#1747b6',900:'#183f8f',950:'#132a5c' }, ink:'#0b1b33' },
+  fontFamily: { display:['"Sora"','sans-serif'], body:['"Inter"','sans-serif'] }
+} } }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+  :root { --ease-out: cubic-bezier(0.22, 1, 0.36, 1); }
+  * { -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background:#f7fafc; color:#0b1b33; overflow-x:hidden; }
+  h1,h2,h3,.font-display { font-family:'Sora',sans-serif; }
+  #preloader { position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#0b1b33 0%,#132a5c 100%); transition:opacity .7s var(--ease-out), visibility .7s; }
+  #preloader.done { opacity:0; visibility:hidden; }
+  .loader-pulse { width:74px; height:74px; border-radius:50%; position:relative; display:flex; align-items:center; justify-content:center; }
+  .loader-pulse::before, .loader-pulse::after { content:''; position:absolute; inset:0; border-radius:50%; border:2px solid #59b0ff; animation:ring 2s ease-out infinite; }
+  .loader-pulse::after { animation-delay:1s; }
+  .loader-heart { color:#59b0ff; animation:beat 1.1s ease-in-out infinite; }
+  @keyframes ring { 0%{transform:scale(.5);opacity:1} 100%{transform:scale(1.6);opacity:0} }
+  @keyframes beat { 0%,100%{transform:scale(1)} 30%{transform:scale(1.22)} 45%{transform:scale(1.05)} 60%{transform:scale(1.18)} }
+  .reveal { opacity:0; transform:translateY(46px); transition:opacity .9s var(--ease-out), transform .9s var(--ease-out); will-change:opacity,transform; }
+  .reveal.slide-left { transform:translateX(-56px); }
+  .reveal.slide-right { transform:translateX(56px); }
+  .reveal.zoom { transform:scale(.86); }
+  .reveal.in { opacity:1; transform:none; }
+  .stagger > * { opacity:0; transform:translateY(36px); transition:opacity .8s var(--ease-out), transform .8s var(--ease-out); }
+  .stagger.in > * { opacity:1; transform:none; }
+  .stagger.in > *:nth-child(1){transition-delay:.05s}.stagger.in > *:nth-child(2){transition-delay:.15s}
+  .stagger.in > *:nth-child(3){transition-delay:.25s}.stagger.in > *:nth-child(4){transition-delay:.35s}
+  .stagger.in > *:nth-child(5){transition-delay:.45s}.stagger.in > *:nth-child(6){transition-delay:.55s}
+  .stagger.in > *:nth-child(7){transition-delay:.65s}.stagger.in > *:nth-child(8){transition-delay:.75s}
+  #nav { transition:background .4s, box-shadow .4s, backdrop-filter .4s; }
+  #nav.scrolled, #nav.solid { background:rgba(255,255,255,.85); backdrop-filter:blur(18px) saturate(160%); box-shadow:0 8px 30px rgba(11,27,51,.08); }
+  .nav-link { position:relative; transition:color .3s; }
+  .nav-link::after { content:''; position:absolute; left:0; bottom:-4px; width:100%; height:2px; background:linear-gradient(90deg,#3390ff,#59e0c5); border-radius:2px; transform:scaleX(0); transform-origin:right; transition:transform .35s var(--ease-out); }
+  .nav-link:hover::after, .nav-link.active::after { transform:scaleX(1); transform-origin:left; }
+  .nav-link.active { color:#1d6ff5; }
+  .float-slow { animation:floaty 7s ease-in-out infinite; }
+  .float-mid { animation:floaty 5.5s ease-in-out infinite 1.2s; }
+  @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
+  .btn-primary { position:relative; overflow:hidden; background:linear-gradient(135deg,#1d6ff5,#3390ff); transition:transform .3s var(--ease-out), box-shadow .3s; box-shadow:0 10px 30px rgba(29,111,245,.35); }
+  .btn-primary:hover { transform:translateY(-3px); box-shadow:0 18px 44px rgba(29,111,245,.45); }
+  .btn-primary:active { transform:translateY(-1px) scale(.97); }
+  .btn-primary::after { content:''; position:absolute; top:0; left:-80%; width:50%; height:100%; background:linear-gradient(105deg,transparent,rgba(255,255,255,.45),transparent); transform:skewX(-25deg); transition:left .6s var(--ease-out); }
+  .btn-primary:hover::after { left:130%; }
+  .btn-ghost { transition:transform .3s var(--ease-out), background .3s, color .3s, border-color .3s; }
+  .btn-ghost:hover { transform:translateY(-3px); }
+  .btn-ghost:active { transform:scale(.97); }
+  .lift-card { transition:transform .45s var(--ease-out), box-shadow .45s var(--ease-out), border-color .45s; border:1px solid rgba(11,27,51,.07); background:#fff; }
+  .lift-card:hover { transform:translateY(-10px); box-shadow:0 30px 60px -18px rgba(11,27,51,.18); border-color:rgba(51,144,255,.35); }
+  .icon-chip { transition:transform .45s var(--ease-out), background .45s, color .45s; }
+  .lift-card:hover .icon-chip { transform:scale(1.12) rotate(-6deg); background:linear-gradient(135deg,#1d6ff5,#3390ff); color:#fff; }
+  .orb { position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; }
+  .img-zoom { overflow:hidden; }
+  .img-zoom img { transition:transform 1.1s var(--ease-out); }
+  .img-zoom:hover img { transform:scale(1.07); }
+  #mobileMenu { clip-path:circle(0% at calc(100% - 44px) 44px); transition:clip-path .65s var(--ease-out); visibility:hidden; }
+  #mobileMenu.open { clip-path:circle(150% at calc(100% - 44px) 44px); visibility:visible; }
+  #burger span { transition:transform .35s var(--ease-out), opacity .3s; }
+  #burger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  #burger.open span:nth-child(2){ opacity:0; }
+  #burger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  #pageCurtain { position:fixed; inset:0; z-index:90; background:linear-gradient(135deg,#0b1b33,#132a5c); transform:translateY(100%); pointer-events:none; }
+  .stat-num { font-variant-numeric:tabular-nums; }
+  .form-input { width:100%; border:1.5px solid rgba(11,27,51,.1); background:#fff; border-radius:1rem; padding:.9rem 1.15rem; transition:border-color .3s, box-shadow .3s; font-size:.95rem; }
+  .form-input:focus { outline:none; border-color:#3390ff; box-shadow:0 0 0 4px rgba(51,144,255,.14); }
+  .field-error { margin-top:.4rem; color:#dc2626; font-size:.8rem; }
+  .filter-chip { transition:all .3s var(--ease-out); }
+  .filter-chip.active, .filter-chip:hover { background:linear-gradient(135deg,#1d6ff5,#3390ff); color:#fff; border-color:transparent; box-shadow:0 8px 22px rgba(29,111,245,.3); }
+  .avail-dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .prose-article p { margin-bottom:1.25rem; line-height:1.85; color:rgba(11,27,51,.72); }
+  .prose-article h2 { font-size:1.6rem; font-weight:700; margin:2.2rem 0 1rem; }
+  .prose-article ul { margin:0 0 1.25rem 1.25rem; list-style:disc; color:rgba(11,27,51,.72); line-height:1.8; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:.001s !important; transition-duration:.001s !important; }
+    html { scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body class="antialiased">
+
+<div id="preloader">
+  <div class="text-center">
+    <div class="loader-pulse mx-auto"><span class="loader-heart">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.8-3.4 5.5 5.5 0 0 0-9.8 3.4c0 6 9.8 11.4 9.8 11.4s9.8-5.4 9.8-11.4z"/></svg>
+    </span></div>
+    <p class="mt-6 text-white/70 text-sm tracking-[0.3em] uppercase font-display">STACKLY</p>
+  </div>
+</div>
+<div id="pageCurtain"></div>
+
+<header id="nav" class="fixed top-0 left-0 right-0 z-50">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-8 py-4">
+    <a href="index.html" class="flex items-center gap-2.5 group">
+      <img src="logo.webp" alt="Stackly logo" class="w-10 h-10 rounded-xl object-cover shadow-lg shadow-brand-500/30 group-hover:rotate-[-8deg] transition-transform duration-300">
+      <span class="font-display font-bold text-lg tracking-tight">Stackly</span>
+    </a>
+    <div class="hidden lg:flex items-center gap-8 text-sm font-medium text-ink/70"><a href="index.html" class="nav-link  hover:text-ink transition-colors">Home</a><a href="about.html" class="nav-link  hover:text-ink transition-colors">About Us</a><a href="doctors.html" class="nav-link  hover:text-ink transition-colors">Doctors</a><a href="blog.html" class="nav-link  hover:text-ink transition-colors">Blog</a><a href="contact.html" class="nav-link active hover:text-ink transition-colors">Contact Us</a></div>
+    <div class="flex items-center gap-3">
+      <a href="login.html" class="hidden sm:inline-flex btn-ghost text-sm font-semibold px-4 py-2.5 rounded-full text-ink/70 hover:text-brand-600">Log in</a>
+      <a href="404.html" class="btn-primary hidden sm:inline-flex text-white text-sm font-semibold px-5 py-2.5 rounded-full">Book Appointment</a>
+      <button id="burger" aria-label="Menu" class="lg:hidden relative z-[60] w-11 h-11 flex flex-col items-center justify-center gap-[5px] rounded-xl bg-white/80 backdrop-blur shadow">
+        <span class="w-5 h-[2px] bg-ink rounded"></span><span class="w-5 h-[2px] bg-ink rounded"></span><span class="w-5 h-[2px] bg-ink rounded"></span>
+      </button>
+    </div>
+  </nav>
+</header>
+<div id="mobileMenu" class="fixed inset-0 z-40 bg-gradient-to-br from-ink to-brand-950 flex flex-col items-center justify-center gap-7 text-white text-2xl font-display font-semibold">
+  <a href="index.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 ">Home</a><a href="about.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 ">About Us</a><a href="doctors.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 ">Doctors</a><a href="blog.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 ">Blog</a><a href="contact.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 text-brand-300">Contact Us</a>
+  <a href="login.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 hover:text-brand-300 text-lg">Log in</a>
+  <a href="404.html" class="menu-item opacity-0 translate-y-6 transition-all duration-500 btn-primary px-8 py-3 rounded-full text-lg">Book Appointment</a>
+</div>
+
+<section class="relative pt-36 pb-20 sm:pt-44 sm:pb-28 overflow-hidden bg-gradient-to-b from-brand-50/80 to-transparent">
+  <div class="orb w-[420px] h-[420px] bg-brand-200/50 -top-40 -left-32" data-parallax="0.1"></div>
+  <div class="orb w-[320px] h-[320px] bg-teal-200/40 top-10 -right-24" data-parallax="0.16"></div>
+  <div class="max-w-4xl mx-auto px-5 sm:px-8 text-center relative z-10">
+    <p class="hero-reveal reveal inline-block text-brand-600 font-semibold text-sm tracking-[0.25em] uppercase">Contact Us</p>
+    <h1 class="hero-reveal reveal mt-4 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]">We're here,<br><span class="bg-gradient-to-r from-brand-600 via-brand-500 to-teal-500 bg-clip-text text-transparent">around the clock.</span></h1>
+    <p class="hero-reveal reveal mt-6 text-lg text-ink/60 max-w-2xl mx-auto leading-relaxed">Questions, appointments, or emergencies — reach us however suits you best. Real humans answer every channel.</p>
+  </div>
+</section>
+
+<section class="pb-10">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+    <div class="reveal rounded-[2rem] bg-gradient-to-r from-rose-600 to-red-500 text-white px-7 py-6 flex flex-col sm:flex-row items-center gap-5 justify-between shadow-xl shadow-rose-600/25">
+      <div class="flex items-center gap-4">
+        <span class="w-13 h-13 w-14 h-14 shrink-0 rounded-2xl bg-white/15 flex items-center justify-center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/></svg></span>
+        <div><p class="font-display font-extrabold text-xl">Medical Emergency?</p><p class="text-white/80 text-sm">Call our 24/7 emergency line immediately — do not use the form.</p></div>
+      </div>
+      <a href="404.html" class="bg-white text-rose-600 font-display font-extrabold text-lg px-7 py-3.5 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-lg whitespace-nowrap">☎ 987654321</a>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 sm:py-20">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-5 gap-10">
+    <div class="lg:col-span-2 space-y-5">
+      <div class="reveal slide-left grid sm:grid-cols-2 gap-5">
+        <div class="lift-card rounded-3xl p-7"><span class="icon-chip w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><h3 class="mt-4 font-display font-bold">Visit Us</h3><p class="mt-2 text-ink/55 text-sm leading-relaxed">Chinna Thirupathi Salem<br>Tamil Nadu 600001</p></div>
+        <div class="lift-card rounded-3xl p-7"><span class="icon-chip w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/></svg></span><h3 class="mt-4 font-display font-bold">Call Us</h3><p class="mt-2 text-ink/55 text-sm leading-relaxed">Appointments: +1 (800) 555-CARE<br>Emergency: +1 (800) 555-2473</p></div>
+        <div class="lift-card rounded-3xl p-7"><span class="icon-chip w-12 h-12 rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg></span><h3 class="mt-4 font-display font-bold">Email Us</h3><p class="mt-2 text-ink/55 text-sm leading-relaxed">hello@stackly.com<br>records@stackly.com</p></div>
+        <div class="lift-card rounded-3xl p-7"><span class="icon-chip w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span><h3 class="mt-4 font-display font-bold">Business Hours</h3><p class="mt-2 text-ink/55 text-sm leading-relaxed">Mon – Sat: 8:00 – 20:00<br>Sunday: 9:00 – 17:00</p></div>
+      </div>
+      <div class="reveal slide-left lift-card rounded-3xl p-7">
+        <h3 class="font-display font-bold flex items-center gap-2.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>Department Hours</h3>
+        <ul class="mt-4 divide-y divide-ink/5 text-sm">
+          <li class="flex justify-between py-2.5"><span class="text-ink/65">Emergency & Urgent Care</span><span class="font-semibold text-emerald-600">Open 24/7</span></li>
+          <li class="flex justify-between py-2.5"><span class="text-ink/65">Outpatient Clinics</span><span class="font-semibold">8:00 – 18:00</span></li>
+          <li class="flex justify-between py-2.5"><span class="text-ink/65">Pharmacy</span><span class="font-semibold">8:00 – 21:00</span></li>
+          <li class="flex justify-between py-2.5"><span class="text-ink/65">Laboratory & Imaging</span><span class="font-semibold">7:30 – 19:00</span></li>
+          <li class="flex justify-between py-2.5"><span class="text-ink/65">Telehealth Support</span><span class="font-semibold text-emerald-600">24/7</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="lg:col-span-3">
+      <div class="reveal slide-right lift-card rounded-[2rem] p-8 sm:p-10">
+        <p class="text-brand-600 font-semibold text-sm tracking-[0.25em] uppercase">Send a Message</p>
+        <h2 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight">We reply within 2 business hours</h2>
+<form id="contactForm" class="mt-8 grid sm:grid-cols-2 gap-5" novalidate>
+  <div><label class="block text-sm font-semibold mb-2" for="contactName">Full name *</label>
+    <input id="contactName" type="text" class="form-input" placeholder="Jane Doe">
+  </div>
+  <div><label class="block text-sm font-semibold mb-2" for="contactEmail">Email *</label>
+    <input id="contactEmail" type="email" class="form-input" placeholder="jane@email.com">
+  </div>
+  <div><label class="block text-sm font-semibold mb-2" for="contactPhone">Phone *</label>
+    <input id="contactPhone" type="tel" class="form-input" placeholder="9876543210" inputmode="numeric" maxlength="10">
+  </div>
+  <div><label class="block text-sm font-semibold mb-2" for="contactSubject">Subject *</label>
+    <select id="contactSubject" class="form-input">
+      <option value="">Select a subject</option>
+      <option>Book an appointment</option><option>Request medical records</option><option>Billing question</option><option>Feedback</option><option>Other</option>
+    </select>
+  </div>
+  <div class="sm:col-span-2"><label class="block text-sm font-semibold mb-2" for="contactMessage">Message *</label>
+    <textarea id="contactMessage" rows="5" class="form-input resize-none" placeholder="How can we help you?"></textarea>
+  </div>
+  <label class="sm:col-span-2 flex items-start gap-3 text-sm text-ink/55">
+    <input id="contactConsent" type="checkbox" class="mt-1 w-4 h-4 accent-brand-600">
+    I consent to Medora Health storing and processing this message to respond to my inquiry.
+  </label>
+  <button id="sendMessageBtn" type="button" class="btn-primary sm:col-span-2 text-white font-semibold px-8 py-4 rounded-full">
+    Send Message
+  </button>
+  <p id="formError" class="sm:col-span-2 hidden text-sm font-semibold text-red-600" role="alert"></p>
+</form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pb-20 sm:pb-28">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+    <div class="reveal zoom rounded-[2rem] overflow-hidden shadow-2xl shadow-ink/15 relative">
+      <iframe title="STACKLY location map" src="https://maps.google.com/maps?q=New%20York%20Medical%20Center&t=&z=14&ie=UTF8&iwloc=&output=embed" class="w-full h-[420px] border-0 grayscale-[30%] contrast-[1.05]" loading="lazy"></iframe>
+      <div class="absolute top-5 left-5 bg-white/90 backdrop-blur-xl rounded-2xl px-5 py-4 shadow-xl border border-white/60 pointer-events-none">
+        <p class="font-display font-bold text-sm">STACKLY</p>
+        <p class="text-ink/55 text-xs mt-0.5">Chiina Thirupathi Salem Tamil Nadu</p>
+      </div>
+    </div>
+    <div class="reveal mt-8 grid sm:grid-cols-3 gap-5 text-center stagger">
+      <div class="lift-card rounded-3xl p-6"><p class="font-display font-extrabold text-brand-600 text-lg">Free parking</p><p class="text-ink/55 text-sm mt-1">Garage on-site, validated for all patients</p></div>
+      <div class="lift-card rounded-3xl p-6"><p class="font-display font-extrabold text-brand-600 text-lg">Subway: 42nd St</p><p class="text-ink/55 text-sm mt-1">2-minute walk from the main entrance</p></div>
+      <div class="lift-card rounded-3xl p-6"><p class="font-display font-extrabold text-brand-600 text-lg">Accessible</p><p class="text-ink/55 text-sm mt-1">Full wheelchair access on every floor</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="bg-ink text-white/60 pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 mb-10"><div class="rounded-3xl border border-white/10 bg-white/5 px-6 py-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"><div><p class="text-brand-300 text-xs font-bold uppercase tracking-[0.2em]">Stackly Care Network</p><p class="mt-1 text-white font-display font-semibold text-lg">Care that stays connected, wherever you are.</p></div><div class="flex flex-wrap gap-3 text-sm"><span class="rounded-full bg-emerald-400/15 px-4 py-2 text-emerald-200">24/7 support</span><a href="tel:9876543211" class="rounded-full bg-brand-500 px-4 py-2 text-white hover:bg-brand-400">Call 9876543211</a></div></div></div>
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+    <div>
+      <a href="index.html" class="flex items-center gap-2.5">
+    <img src="logo.webp" alt="Stackly logo" class="w-10 h-10 rounded-xl object-cover">
+    <span class="font-display font-bold text-lg text-white">Stackly</span>
+</a>
+      <p class="mt-4 text-sm leading-relaxed">Premium healthcare with a human heart. Serving communities since 2011.</p>
+       <div class="mt-5 flex gap-3">
+        <a href="404.html" aria-label="Twitter" class="w-9 h-9 rounded-lg bg-white/8 flex items-center justify-center hover:bg-brand-600 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.2l7.3-8.3L2.8 2h6.4l4.4 5.9L18.9 2zm-1.1 18h1.7L7.1 3.9H5.3L17.8 20z"/></svg></a>
+        <a href="404.html" aria-label="LinkedIn" class="w-9 h-9 rounded-lg bg-white/8 flex items-center justify-center hover:bg-brand-600 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.2 8h4.6v14H.2V8zm7.6 0h4.4v1.9h.1c.6-1.2 2.1-2.4 4.4-2.4 4.7 0 5.6 3.1 5.6 7.1V22h-4.6v-6.5c0-1.6 0-3.6-2.2-3.6s-2.6 1.7-2.6 3.5V22H7.8V8z"/></svg></a>
+        <a href="404.html" aria-label="Instagram" class="w-9 h-9 rounded-lg bg-white/8 flex items-center justify-center hover:bg-brand-600 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+        <a href="404.html" aria-label="Facebook" class="w-9 h-9 rounded-lg bg-white/8 flex items-center justify-center hover:bg-brand-600 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M14 8h3V4h-3c-2.8 0-5 2.2-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.6.4-1 1-1z"/></svg></a>
+      </div>
+    </div>
+    <div><h4 class="text-white font-semibold mb-4">Services</h4><ul class="space-y-2.5 text-sm"><li><a href="index.html#services" class="hover:text-brand-300 transition-colors">Cardiology</a></li><li><a href="index.html#services" class="hover:text-brand-300 transition-colors">Telemedicine</a></li><li><a href="index.html#services" class="hover:text-brand-300 transition-colors">Pediatrics</a></li><li><a href="index.html#services" class="hover:text-brand-300 transition-colors">Diagnostics</a></li></ul></div>
+    <div><h4 class="text-white font-semibold mb-4">Company</h4><ul class="space-y-2.5 text-sm"><li><a href="about.html" class="hover:text-brand-300 transition-colors">About us</a></li><li><a href="doctors.html" class="hover:text-brand-300 transition-colors">Doctors</a></li><li><a href="blog.html" class="hover:text-brand-300 transition-colors">Blog</a></li><li><a href="contact.html" class="hover:text-brand-300 transition-colors">Contact</a></li></ul></div>
+    <div><h4 class="text-white font-semibold mb-4">Contact</h4><ul class="space-y-2.5 text-sm"><li>9876543211</li><li>Chinna Thirupathi</li><li>Salem, Tamil Nadu</li><li>healthcare@stackly.com</li></ul></div>
+  </div>
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-3 text-xs">
+    <p>© 2026 Stackly. All rights reserved.</p>
+
+    <div class="flex gap-4">
+        <a href="404.html" class="hover:text-pink-500 transition">Privacy</a>
+        <a href="404.html" class="hover:text-pink-500 transition">Terms</a>
+        <a href="404.html" class="hover:text-pink-500 transition">Accessibility</a>
+    </div>
+</div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('done');
+    document.querySelectorAll('.hero-reveal, #hero .reveal').forEach((el,i)=>setTimeout(()=>el.classList.add('in'), 150+i*130));
+  }, 900);
+});
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40), {passive:true});
+const burger = document.getElementById('burger'), menu = document.getElementById('mobileMenu');
+const menuItems = menu.querySelectorAll('.menu-item');
+burger.addEventListener('click', () => {
+  const open = menu.classList.toggle('open');
+  burger.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+  menuItems.forEach((it,i)=> setTimeout(()=>{ it.style.opacity = open?1:0; it.style.transform = open?'none':'translateY(24px)'; }, open? 220+i*70 : 0));
+});
+menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { menu.classList.remove('open'); burger.classList.remove('open'); document.body.style.overflow=''; }));
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, {threshold: 0.12});
+document.querySelectorAll('.reveal:not(#hero .reveal):not(.hero-reveal), .stagger').forEach(el => io.observe(el));
+const counterIO = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target, target = +el.dataset.target, suffix = el.dataset.suffix || '';
+    const obj = {v: 0};
+    gsap.to(obj, {v: target, duration: 2, ease: 'power2.out', onUpdate: () => el.textContent = Math.round(obj.v) + suffix});
+    counterIO.unobserve(el);
+  });
+}, {threshold: 0.5});
+document.querySelectorAll('.stat-num').forEach(el => counterIO.observe(el));
+document.querySelectorAll('[data-parallax]').forEach(el => {
+  gsap.to(el, { yPercent: -60 * parseFloat(el.dataset.parallax) * 10, ease: 'none',
+    scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: 1.2 } });
+});
+document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+  const id = a.getAttribute('href');
+  if (id.length < 2) return;
+  const target = document.querySelector(id);
+  if (!target) return;
+  e.preventDefault();
+  const curtain = document.getElementById('pageCurtain');
+  gsap.timeline()
+    .to(curtain, {y: 0, duration: .45, ease: 'power3.inOut'})
+    .add(() => target.scrollIntoView({behavior: 'instant'}))
+    .to(curtain, {y: '-100%', duration: .55, ease: 'power3.inOut', delay: .1})
+    .set(curtain, {y: '100%'});
+}));
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("contactForm");
+  const sendButton = document.getElementById("sendMessageBtn");
+  if (!form || !sendButton) return;
+
+  // Keep input formatting only; do not block submission with alerts.
+  const nameField = document.getElementById("contactName");
+  const phoneField = document.getElementById("contactPhone");
+
+  nameField.addEventListener("input", function () {
+    this.value = this.value.replace(/[^A-Za-z ]/g, "");
+  });
+
+  phoneField.addEventListener("input", function () {
+    this.value = this.value.replace(/\D/g, "").slice(0, 10);
+  });
+
+  // Send Message: always clear the form and go directly to 404.
+  // Capture phase prevents button-links.js from adding another action first.
+  sendButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    form.reset();
+    window.location.assign("404.html");
+  }, true);
+
+  // When returning to this page with Back/Forward cache, keep the form empty.
+  window.addEventListener("pageshow", function () {
+    form.reset();
+  });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="button-links.js"></script>
+
+</body>
+</html>
+

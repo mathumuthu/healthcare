@@ -4,6 +4,15 @@
   const config = window.stacklyFirebaseConfig;
   const isConfigured = config && !Object.values(config).some(value => String(value).includes('YOUR_'));
 
+  function populateProfileFromLocalStorage() {
+    const profile = {
+      name: localStorage.getItem('userName') || 'Patient User',
+      email: localStorage.getItem('userEmail') || 'patient@example.com',
+      role: normalizeRole(localStorage.getItem('userRole')) || 'Patient'
+    };
+    showProfile(profile);
+  }
+
   if (!isConfigured) {
     console.error('Stackly Firebase is not configured. Update firebase-config.js before using authentication.');
     window.loginUser = function (event) {
@@ -14,6 +23,7 @@
       event.preventDefault();
       alert('Firebase is not configured. Add your Firebase Web App settings in firebase-config.js.');
     };
+    populateProfileFromLocalStorage();
     return;
   }
 
@@ -41,6 +51,17 @@
     };
   }
 
+  function persistProfile(profile) {
+    const safeProfile = {
+      name: profile.name || 'Patient User',
+      email: profile.email || 'patient@example.com',
+      role: profile.role || 'Patient'
+    };
+    localStorage.setItem('userName', safeProfile.name);
+    localStorage.setItem('userEmail', safeProfile.email);
+    localStorage.setItem('userRole', safeProfile.role);
+  }
+
   function showProfile(profile) {
     const name = document.getElementById('userName');
     const email = document.getElementById('userEmail');
@@ -48,10 +69,14 @@
     if (name) name.textContent = profile.name;
     if (email) email.textContent = profile.email;
     if (role) role.textContent = profile.role;
-    const initials = document.getElementById('adminInitials');
-    if (initials) {
-      initials.textContent = profile.name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase();
-    }
+    const initialsText = profile.name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase();
+    ['adminInitials', 'userInitial', 'mobileInitial'].forEach(id => {
+      const initials = document.getElementById(id);
+      if (initials) initials.textContent = initialsText;
+    });
+    const welcomeText = document.getElementById('welcomeText');
+    if (welcomeText) welcomeText.textContent = `Welcome back, ${profile.name}!`;
+    persistProfile(profile);
   }
 
   window.handleLogout = async function () {
@@ -80,6 +105,7 @@
       }
       if (remember) localStorage.setItem('rememberedEmail', email);
       else localStorage.removeItem('rememberedEmail');
+      persistProfile(profile);
       window.location.href = selectedRole === 'Admin' ? 'admin-dashboard.html' : 'user-dashboard.html';
     } catch (error) {
       console.error(error);
@@ -117,6 +143,7 @@
         if (!profile.role) return window.location.replace('login.html');
         if (isAdminPage && profile.role !== 'Admin') return window.location.replace('user-dashboard.html');
         if (isUserPage && profile.role === 'Admin') return window.location.replace('admin-dashboard.html');
+        persistProfile(profile);
         showProfile(profile);
       } catch (error) {
         console.error(error);

@@ -98,16 +98,31 @@ cursor:pointer;
 }
 
 .row{
-display:flex;
-justify-content:space-between;
-font-size:13px;
-color:white;
-margin-top:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:10px;
+    font-size:13px;
+    color:white;
+}
+
+.row label{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin:0;
+    cursor:pointer;
+}
+
+.row input[type="checkbox"]{
+    width:auto;
+    margin:0;
 }
 
 .row a{
-color:white;
-text-decoration:none;
+    color:white;
+    text-decoration:none;
+    white-space:nowrap;
 }
 
 button{
@@ -283,6 +298,30 @@ function loginUser(event){
         window.location.href = "researcher-dashboard.html";
     }
 }
+
+
+
+
+
+
+localStorage.setItem("userName", name);
+localStorage.setItem("userEmail", email);
+localStorage.setItem("userRole", role);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 </body>

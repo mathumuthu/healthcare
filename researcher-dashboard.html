@@ -11,7 +11,6 @@
         body { font-family: 'Inter', sans-serif; }
         .gradient-text {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -64,7 +63,7 @@
                 <i class="fas fa-bars text-gray-600 text-xl"></i>
             </button>
             <!-- Mobile Logo with href -->
-            <a href="researcher-dasboard.html" class="flex items-center gap-2 logo-hover">
+            <a href="user.html" target="_blank" class="flex items-center gap-2 logo-hover">
                 <img src="logo.webp" alt="BioTech Labs Logo" class="w-10 h-10 rounded-lg shadow-md object-cover">
                 <div>
                     <h1 class="font-bold text-gray-900 text-sm">Stackly</h1>
@@ -77,12 +76,25 @@
                 <i class="fas fa-bell text-gray-600"></i>
                 <span class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
             </button>
-            <button onclick="handleLogout()" class="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg" title="Logout" aria-label="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold text-sm">
-                JD
-            </div>
+            <div class="flex items-center gap-3">
+    <button class="relative p-2 hover:bg-gray-100 rounded-lg">
+        <i class="fas fa-bell text-gray-600"></i>
+        <span class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+    </button>
+
+    <div class="text-right">
+       <h4 id="userName">Loading...</h4>
+
+<p id="userEmail">Loading...</p>
+
+<span id="userRole">Loading...</span>
+
+    </div>
+
+    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold">
+        <span id="userInitial">U</span>
+    </div>
+</div>
         </div>
     </div>
 
@@ -102,8 +114,8 @@
 
             <!-- Mobile Logo in Sidebar -->
             <div class="lg:hidden p-4 border-b border-gray-100">
-                <a href="researcher-dasboard.html" class="flex items-center gap-3 logo-hover">
-                    <img src="medical.png" alt="Stackly Logo" class="w-10 h-10 rounded-lg shadow-md object-cover">
+                <a href="Dash3.html" target="_blank" class="flex items-center gap-3 logo-hover">
+                    <img src="logo.webp" alt="Stackly Logo" class="w-10 h-10 rounded-lg shadow-md object-cover">
                     <div>
                         <h1 class="font-bold text-gray-900">Stackly</h1>
                         <p class="text-xs text-gray-500">Researcher Portal</p>
@@ -190,18 +202,15 @@
                     </div>
                 </div>
                 
-                <div class="flex items-center gap-4 ml-6">
-                <button class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors" onclick="navigateTo('settings')" aria-label="Open settings">
-                        <i class="fas fa-bell text-gray-600 text-lg"></i>
-                        <span class="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-white">3</span>
-                    </button>
+                <div class="flex items-center gap-4">
 
-                    <button class="logout-btn px-3 py-2 text-sm text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" onclick="handleLogout()">
-                        <i class="fas fa-sign-out-alt mr-1"></i> Logout
-                    </button>
-                    
-                    <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
-                        <div class="text-right hidden xl:block">
+    <button class="relative p-2">
+        <i class="fas fa-bell text-gray-600"></i>
+        <span class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+            3
+        </span>
+    </button>
+                 <div class="text-right hidden xl:block">
     <p id="userName" class="text-sm font-semibold text-gray-900">
         Welcome
     </p>
@@ -210,9 +219,7 @@
     </p>
     <p id="userRole" class="text-xs text-purple-600 font-medium">Loading...</p>
 </div>
-                       <i class="fas fa-chevron-down text-gray-400 text-sm cursor-pointer"></i>
-                    </div>
-                </div>
+
             </header>
 
             <!-- Mobile Search -->
@@ -229,8 +236,10 @@
                 <!-- Dashboard Page -->
                 <div id="page-dashboard" class="page-content fade-in">
                     <div class="mb-8">
-                        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Welcome back, !</h1>
-                        <p class="text-gray-500">Here's what's happening with your research today</p>
+<h1 id="welcomeText"
+    class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+    Welcome back!
+</h1>                        <p class="text-gray-500">Here's what's happening with your research today</p>
                     </div>
 
                     <!-- Stats Cards -->
@@ -1114,30 +1123,93 @@
             </div>
         </main>
     </div>
-<!-- 
-    <footer class="bg-gray-900 text-gray-300 px-6 py-5 text-sm">
-        <div class="max-w-7xl mx-auto grid gap-4 sm:grid-cols-3 items-center">
-            <div class="flex items-center gap-2"><img src="logo.webp" alt="Stackly logo" class="w-8 h-8 rounded-lg object-cover"><div><strong class="text-white">Stackly Care Network</strong><p class="text-xs text-gray-400">Care that stays connected, wherever you are.</p></div></div>
-            <div class="text-center text-xs"><p>Chinna Thirupathi, Salem, Tamil Nadu</p><a href="tel:9876543211" class="text-brand-300 hover:text-white">24/7 support · 9876543211</a></div>
-            <div class="flex justify-center sm:justify-end items-center gap-3" aria-label="Social links"><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="Facebook">f</a><a href="#" aria-label="Instagram">ig</a></div>
-        </div>
-    </footer> -->
 
     <script>
-function togglePassword() {
-    let pass = document.getElementById("password");
-    pass.type = pass.type === "password" ? "text" : "password";
-}
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
 
-/* Page load ஆனதும் saved email load ஆகும் */
-window.onload = function () {
-    let savedEmail = localStorage.getItem("rememberedEmail");
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
 
-    if (savedEmail) {
-        document.getElementById("email").value = savedEmail;
-        document.getElementById("remember").checked = true;
-    }
-};
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuBtn.addEventListener('click', openSidebar);
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        // Navigation functionality
+        function navigateTo(page) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Show selected page
+            const selectedPage = document.getElementById(`page-${page}`);
+            if (selectedPage) {
+                selectedPage.classList.remove('hidden');
+            }
+            
+            // Update nav active states
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === page) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Close mobile sidebar
+            closeSidebar();
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Initialize dashboard as active
+        document.addEventListener('DOMContentLoaded', () => {
+            navigateTo('dashboard');
+        });
+
+        // Handle window resize
+//         window.addEventListener('resize', () => {
+//             if (window.innerWidth >= 1024) {
+//                 closeSidebar();
+//             }
+//         });
+// firebase.auth().onAuthStateChanged((user) => {
+//     if (user) {
+//         document.getElementById("userName").innerText =
+//             "Welcome, " + user.email;
+
+//         document.getElementById("userEmail").innerText =
+//             user.email;
+//     }
+// });
+
+
+
+
+ // Initialize dashboard as active
+        document.addEventListener('DOMContentLoaded', () => {
+            navigateTo('dashboard');
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                closeSidebar();
+            }
+        });
 document.addEventListener("DOMContentLoaded", () => {
 
     let name = localStorage.getItem("userName");
@@ -1153,12 +1225,35 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("userRole").innerText =
         role;
 });
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    let name = localStorage.getItem("userName");
+    let email = localStorage.getItem("userEmail");
+    let role = localStorage.getItem("userRole");
+
+    document.getElementById("userName").innerText =
+        "Welcome, " + name;
+
+    document.getElementById("userEmail").innerText =
+        email;
+
+    document.getElementById("userRole").innerText =
+        role;
+});
+
+
+
 </script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="auth.js"></script>
-<script src="button-links.js"></script>
+
+
 </body>
 </html>
